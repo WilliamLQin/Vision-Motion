@@ -9,50 +9,29 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import android.app.Activity;
-import android.content.pm.ActivityInfo;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.SurfaceView;
-import android.view.WindowManager;
-import android.widget.TextView;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Core;
-import org.opencv.core.CvType;
-import org.opencv.core.DMatch;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
-import org.opencv.core.MatOfDMatch;
-import org.opencv.core.MatOfKeyPoint;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Scalar;
 import org.opencv.core.Point;
-import org.opencv.features2d.DescriptorExtractor;
-import org.opencv.features2d.DescriptorMatcher;
-import org.opencv.features2d.FeatureDetector;
-import org.opencv.features2d.Features2d;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
 
@@ -108,6 +87,9 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         }
     }
     private List<DataEntry> mRecordedData = new ArrayList<>();
+
+    private double objLength;
+    private int seekBarProgress;
 
     // Viewport
     private int w, h;
@@ -166,6 +148,14 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         setContentView(R.layout.activity_main);
 
+        try{
+            Bundle bundle = getIntent().getExtras();
+            objLength = Double.parseDouble(bundle.getString("length"));
+
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
         }
@@ -176,7 +166,47 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         mTextView = (TextView) findViewById(R.id.textview);
 
+        SeekBar slider = (SeekBar) findViewById(R.id.slider);
+        slider.setOnSeekBarChangeListener(customSeekBarListener);
+
+        final Button record = (Button) findViewById(R.id.record);
+        record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeButtonText(record);
+
+
+            }
+        });
+
     }
+
+    private void changeButtonText(Button button) {
+        if(button.getText() == "Go") {
+            button.setText("Stop");
+        } else {
+            button.setText("Go");
+        }
+    }
+
+    private SeekBar.OnSeekBarChangeListener customSeekBarListener = new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//            System.out.println("Seek bar at: " + progress);
+            seekBarProgress = progress;
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
+        }
+    };
+
     @Override
     protected void onPause() {
         super.onPause();
