@@ -69,18 +69,56 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     }
 
     private TextView mTextView;
-    private double mCenterX, mCenterY;
 
+    // Color settings
+    private Scalar mTargetHSV = new Scalar(60, 155, 155);
+    private double mRangeH = 20, mRangeS = 100, mRangeV = 100;
+
+    private int mCurrentState = 1;
+
+    // Time recording
+    private long mLastTime, mDeltaTime;
+    // Position recording
+    private double mCenterX, mCenterY;
+    // List to hold recorded data
+    public class DataEntry
+    {
+        private long time;
+        private double x;
+        private double y;
+
+        public DataEntry(long time, double x, double y)
+        {
+            this.time = time;
+            this.x = x;
+            this.y = y;
+        }
+
+        public long getTime()
+        {
+            return time;
+        }
+        public double getX()
+        {
+            return x;
+        }
+        public double getY()
+        {
+            return y;
+        }
+    }
+    private List<DataEntry> mRecordedData = new ArrayList<>();
+
+    // Viewport
     private int w, h;
-    private CameraBridgeViewBase mOpenCvCameraView;
 
     // Minimum contour area in percent for contours filtering
     private static double mMinContourArea = 0.99;
 
+    // Cache
     private List<MatOfPoint> mContours = new ArrayList<>();
     private List<MatOfPoint> mPreContours = new ArrayList<>();
 
-    // Cache
     private Mat mRgbaMat = new Mat();
     private Mat mHsvMat = new Mat();
     private Mat mBgrMat = new Mat();
@@ -88,6 +126,9 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private Mat mMask = new Mat();
     private Mat mDilatedMask = new Mat();
     private Mat mHierarchy = new Mat();
+
+    // OpenCV
+    private CameraBridgeViewBase mOpenCvCameraView;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -126,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         setContentView(R.layout.activity_main);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, 100);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
         }
 
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.javasurfaceview);
@@ -136,7 +177,6 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         mTextView = (TextView) findViewById(R.id.textview);
 
     }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -170,22 +210,55 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     public void onCameraViewStopped() {
 
     }
-
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         System.gc();
         System.runFinalization();
 
-        return pipeline(inputFrame.rgba());
+        setColorSpaceMats(inputFrame.rgba());
+
+        mDeltaTime = System.currentTimeMillis() - mLastTime;
+        mLastTime = System.currentTimeMillis();
+
+        Mat reMat = mRgbaMat;
+
+        switch (mCurrentState)
+        {
+            case 0: // Tuning sliders to see object
+
+                break;
+
+
+            case 1: // Recording time vs. position
+
+                reMat = pipeline();
+                break;
+
+
+            case 2: // Stopped
+
+                break;
+
+            default:
+
+                break;
+        }
+
+
+        return reMat;
     }
 
-    public Mat pipeline(Mat aInputFrame) {
+    private Scalar getLowerBound() {
+        return new Scalar(mTargetHSV.val[0] - mRangeH, mTargetHSV.val[1] - mRangeS, mTargetHSV.val[2] - mRangeV);
+    }
+    private Scalar getUpperBound() {
+        return new Scalar(mTargetHSV.val[0] + mRangeH, mTargetHSV.val[1] + mRangeS, mTargetHSV.val[2] + mRangeV);
+    }
 
-        // BEGIN OpenCV Pipeline
-//  --------------------------------------------------------------
+    private void setColorSpaceMats(Mat inMat) { // Also sets mBgrMat
 
         // Convert to BGR
-        Imgproc.cvtColor(aInputFrame, mBgrMat, Imgproc.COLOR_RGBA2BGR);
+        Imgproc.cvtColor(inMat, mBgrMat, Imgproc.COLOR_RGBA2BGR);
 
         // Get RGBA
         mRgbaMat = mBgrMat; // For some reason on a Huawei P10 the output needs to be in BGR
@@ -194,17 +267,19 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         // Convert to HSV
         Imgproc.cvtColor(mBgrMat, mHsvMat, Imgproc.COLOR_BGR2HSV);
 
-        // Find contours
-        Scalar lowerBound = new Scalar(60 - 20, 60, 60);
-        Scalar upperBound = new Scalar(60 + 20, 245, 245);
+    }
 
-        Core.inRange(mHsvMat, lowerBound, upperBound, mMask);
+    public Mat pipeline() {
+
+        // BEGIN OpenCV Pipeline
+//  --------------------------------------------------------------
+
+        // Find contours
+        Core.inRange(mHsvMat, getLowerBound(), getUpperBound(), mMask);
         Imgproc.erode(mMask, mDilatedMask, new Mat(), new Point(-1.0, -1.0), 1);
 
         mPreContours.clear();
         Imgproc.findContours(mDilatedMask, mPreContours, mHierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-
-        System.out.println("Contours Count: " + mPreContours.size());
 
         // Find max contour area
         double maxArea = 0;
@@ -226,7 +301,6 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                 mContours.add(contour);
             }
         }
-        System.out.println("Filtered Contours Count: " + mContours.size());
 
         // Draw Contours
         Imgproc.drawContours(mRgbaMat, mContours, -1, new Scalar(255, 255, 255), -1);
@@ -234,17 +308,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         // Do actions with contours
         for (MatOfPoint contour : mContours) {
 
-            // Draw Center
-            Moments moments = Imgproc.moments(contour);
-
-            int cX = (int)(moments.get_m10() / moments.get_m00());
-            int cY = (int)(moments.get_m01() / moments.get_m00());
-
-            Imgproc.circle(mRgbaMat, new Point(cX, cY), 7, new Scalar(160, 255, 255), -1);
-            Imgproc.putText(mRgbaMat, "center", new Point(cX - 20, cY - 20), 0, 0.5, new Scalar (160, 255, 255), 2);
-
-
-            // Draw Minimum Enclosing Circle
+            // Get Minimum Enclosing Circle
             Point center = new Point(0, 0);
             float[] radius = new float[1];
 
@@ -252,8 +316,12 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
             Imgproc.minEnclosingCircle(floatContour, center, radius);
 
-            Imgproc.circle(mRgbaMat, center, (int)radius[0], new Scalar(100, 100, 255), 7);
 
+            // Get Center
+            Moments moments = Imgproc.moments(contour);
+
+            int cX = (int) (moments.get_m10() / moments.get_m00());
+            int cY = (int) (moments.get_m01() / moments.get_m00());
 
             // Set Output Center Value
 //            mCenterX = (double) cX;
@@ -262,9 +330,15 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             mCenterY = center.y;
 
 
+            // Draw Minimum Enclosing Circle
+            Imgproc.circle(mRgbaMat, center, (int) radius[0], new Scalar(100, 100, 255), 7);
+
+
+            // Draw Center
+            Imgproc.circle(mRgbaMat, new Point(mCenterX, mCenterY), 7, new Scalar(160, 255, 255), -1);
+            Imgproc.putText(mRgbaMat, "center", new Point(mCenterX - 20, mCenterY - 20), 0, 0.5, new Scalar(160, 255, 255), 2);
+
         }
-
-
 
 
         runOnUiThread(new Runnable() {
@@ -276,31 +350,12 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             }
         });
 
-
 //  --------------------------------------------------------------
         // END OpenCV Pipeline
 
         return mRgbaMat;
     }
 
-//    private void releaseCache() {
-//        if (mBgrMat != null)
-//            mBgrMat.release();
-//
-//        if (mHsvMat != null)
-//            mHsvMat.release();
-//
-//        for (Mat m : mHsvChannels) {
-//            if (m != null)
-//                m.release();
-//        }
-//
-//        if (mHMat != null)
-//            mHMat.release();
-//        if (mSMat != null)
-//            mSMat.release();
-//        if (mVMat != null)
-//            mVMat.release();
-//    }
+
 
 }
