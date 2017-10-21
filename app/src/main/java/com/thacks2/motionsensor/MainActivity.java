@@ -1,6 +1,7 @@
 package com.thacks2.motionsensor;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -71,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private TextView mTextView;
     private double mCenterX, mCenterY;
 
+    private double objLength;
+
     private int w, h;
     private CameraBridgeViewBase mOpenCvCameraView;
 
@@ -127,6 +130,17 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         setContentView(R.layout.activity_main);
 
+        try{
+            Bundle bundle = getIntent().getExtras();
+            objLength = Double.parseDouble(bundle.getString("length"));
+
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+
+//        System.out.println("length: "+objLength);
+
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, 100);
         }
@@ -136,6 +150,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         mOpenCvCameraView.setCvCameraViewListener(this);
 
         mTextView = (TextView) findViewById(R.id.textview);
+
+
 
     }
 
