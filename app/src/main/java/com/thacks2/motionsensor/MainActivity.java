@@ -34,6 +34,7 @@ import org.opencv.core.MatOfByte;
 import org.opencv.core.MatOfDMatch;
 import org.opencv.core.MatOfKeyPoint;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Scalar;
 import org.opencv.core.Point;
 import org.opencv.features2d.DescriptorExtractor;
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private CameraBridgeViewBase mOpenCvCameraView;
 
     // Minimum contour area in percent for contours filtering
-    private static double mMinContourArea = 0.1;
+    private static double mMinContourArea = 0.9;
 
     private List<MatOfPoint> mContours = new ArrayList<>();
     private List<MatOfPoint> mPreContours = new ArrayList<>();
@@ -248,7 +249,14 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
 
             // Draw Minimum Enclosing Circle
-            //Imgproc.minEnclosingCircle();
+            Point center = new Point(0, 0);
+            float[] radius = new float[1];
+
+            MatOfPoint2f floatContour = new MatOfPoint2f(contour.toArray());
+
+            Imgproc.minEnclosingCircle(floatContour, center, radius);
+
+            Imgproc.circle(mRgbaMat, center, (int)radius[0], new Scalar(100, 100, 255), 7);
 
 
         }
