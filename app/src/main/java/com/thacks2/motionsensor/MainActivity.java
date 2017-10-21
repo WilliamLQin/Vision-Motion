@@ -83,9 +83,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     // Cache
     private Mat mRgbaMat = new Mat();
     private Mat mHsvMat = new Mat();
-
-    private List<Mat> mHsvChannels = new ArrayList<>();
-    private Mat mHMat = new Mat(), mSMat = new Mat(), mVMat = new Mat();
+    private Mat mBgrMat = new Mat();
 
     private Mat mMask = new Mat();
     private Mat mDilatedMask = new Mat();
@@ -186,22 +184,15 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         // BEGIN OpenCV Pipeline
 //  --------------------------------------------------------------
 
-        // Convert to RGBA
-        Imgproc.cvtColor(aInputFrame, mRgbaMat, Imgproc.COLOR_BGR2RGBA);
+        // Convert to BGR
+        Imgproc.cvtColor(aInputFrame, mBgrMat, Imgproc.COLOR_RGBA2BGR);
+
+        // Get RGBA
+        mRgbaMat = mBgrMat; // For some reason on a Huawei P10 the output needs to be in BGR
+//        mRgbaMat = aInputFrame;
 
         // Convert to HSV
-        Imgproc.cvtColor(aInputFrame, mHsvMat, Imgproc.COLOR_BGR2HSV);
-
-        // Split HSV to individual channels
-        mHsvChannels.clear();
-        Core.split(mHsvMat, mHsvChannels);
-
-        // Get gray scale H channel
-        Imgproc.cvtColor(mHsvChannels.get(0), mHMat, Imgproc.COLOR_GRAY2RGBA);
-        // Get gray scale S channel
-        Imgproc.cvtColor(mHsvChannels.get(0), mSMat, Imgproc.COLOR_GRAY2RGBA);
-        // Get gray scale V channel
-        Imgproc.cvtColor(mHsvChannels.get(0), mVMat, Imgproc.COLOR_GRAY2RGBA);
+        Imgproc.cvtColor(mBgrMat, mHsvMat, Imgproc.COLOR_BGR2HSV);
 
         // Find contours
         Scalar lowerBound = new Scalar(60 - 20, 60, 60);
@@ -269,7 +260,6 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 //            mCenterY = (double) cY;
             mCenterX = center.x;
             mCenterY = center.y;
-
 
 
         }
