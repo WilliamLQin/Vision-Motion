@@ -38,6 +38,7 @@ import org.opencv.core.MatOfByte;
 import org.opencv.core.MatOfDMatch;
 import org.opencv.core.MatOfKeyPoint;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Scalar;
 import org.opencv.core.Point;
 import org.opencv.features2d.DescriptorExtractor;
@@ -68,13 +69,13 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     }
 
     private TextView mTextView;
-    private int mCenterX, mCenterY;
+    private double mCenterX, mCenterY;
 
     private int w, h;
     private CameraBridgeViewBase mOpenCvCameraView;
 
     // Minimum contour area in percent for contours filtering
-    private static double mMinContourArea = 0.1;
+    private static double mMinContourArea = 0.99;
 
     private List<MatOfPoint> mContours = new ArrayList<>();
     private List<MatOfPoint> mPreContours = new ArrayList<>();
@@ -248,15 +249,27 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             int cX = (int)(moments.get_m10() / moments.get_m00());
             int cY = (int)(moments.get_m01() / moments.get_m00());
 
-            mCenterX = cX;
-            mCenterY = cY;
-
             Imgproc.circle(mRgbaMat, new Point(cX, cY), 7, new Scalar(160, 255, 255), -1);
             Imgproc.putText(mRgbaMat, "center", new Point(cX - 20, cY - 20), 0, 0.5, new Scalar (160, 255, 255), 2);
 
 
             // Draw Minimum Enclosing Circle
-            //Imgproc.minEnclosingCircle();
+            Point center = new Point(0, 0);
+            float[] radius = new float[1];
+
+            MatOfPoint2f floatContour = new MatOfPoint2f(contour.toArray());
+
+            Imgproc.minEnclosingCircle(floatContour, center, radius);
+
+            Imgproc.circle(mRgbaMat, center, (int)radius[0], new Scalar(100, 100, 255), 7);
+
+
+            // Set Output Center Value
+//            mCenterX = (double) cX;
+//            mCenterY = (double) cY;
+            mCenterX = center.x;
+            mCenterY = center.y;
+
 
 
         }
