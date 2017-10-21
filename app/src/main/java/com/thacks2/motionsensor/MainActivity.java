@@ -10,7 +10,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -73,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private double mCenterX, mCenterY;
 
     private double objLength;
+    private int seekBarProgress;
 
     private int w, h;
     private CameraBridgeViewBase mOpenCvCameraView;
@@ -149,9 +153,46 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         mTextView = (TextView) findViewById(R.id.textview);
 
+        SeekBar slider = (SeekBar) findViewById(R.id.slider);
+        slider.setOnSeekBarChangeListener(customSeekBarListener);
 
+        final Button record = (Button) findViewById(R.id.record);
+        record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeButtonText(record);
+            }
+        });
 
     }
+
+    private void changeButtonText(Button button) {
+        if(button.getText() == "Go") {
+            button.setText("Stop");
+        } else {
+            button.setText("Go");
+        }
+    }
+
+    private SeekBar.OnSeekBarChangeListener customSeekBarListener = new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//            System.out.println("Seekbar at: " + progress);
+            seekBarProgress = progress;
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
+        }
+    };
+
+
 
     @Override
     protected void onPause() {
@@ -212,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         // Find contours
         Scalar lowerBound = new Scalar(60 - 20, 60, 60);
-        Scalar upperBound = new Scalar(60 + 20, 245, 245);
+        Scalar upperBound = new Scalar(60 + 20, 255, 255);
 
         Core.inRange(mHsvMat, lowerBound, upperBound, mMask);
         Imgproc.erode(mMask, mDilatedMask, new Mat(), new Point(-1.0, -1.0), 1);
