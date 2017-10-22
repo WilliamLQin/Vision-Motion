@@ -50,15 +50,19 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private Button mButton;
 
     // Color settings
-    private Scalar mTargetHSV = new Scalar(60, 155, 155);
+    private double mTargetH = 60, mTargetS = 155, mTargetV = 155;
     private double mRangeH = 20, mRangeS = 100, mRangeV = 100;
 
     private int mCurrentState = 0;
 
+    private double mObjLength;
+    private int mSeekBarProgress;
+
     // Time recording
-    private long mLastTime, mDeltaTime;
+    private long mStartTime, mLastTime, mDeltaTime, mElapsedTime;
     // Position recording
     private double mCenterX, mCenterY;
+    private double mStartX, mStartY;
     // Size recording
     private float mDiameter;
 
@@ -80,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         public long getTime()
         {
-            return time;
+            return time/1000;
         }
         public double getX()
         {
@@ -90,11 +94,17 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         {
             return y;
         }
+        public float getDiameter()
+        {
+            return diameter;
+        }
+
+        @Override
+        public String toString() {
+            return "DataEntry: T=" + time + " X=" + x + " Y=" + y + " Diameter=" + diameter;
+        }
     }
     private List<DataEntry> mRecordedData = new ArrayList<>();
-
-    private double objLength;
-    private int seekBarProgress;
 
     // Viewport
     private int w, h;
@@ -155,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         try{
             Bundle bundle = getIntent().getExtras();
-            objLength = Double.parseDouble(bundle.getString("length"));
+            mObjLength = Double.parseDouble(bundle.getString("length"));
 
         } catch(Exception e) {
             System.out.println(e);
@@ -188,18 +198,23 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private void startRecording() {
         mCurrentState = 1;
         mButton.setText("Stop");
+        mStartTime = System.currentTimeMillis();
+        mTargetH = mSeekBarProgress;
     }
 
     private void stopRecording() {
         mCurrentState = 2;
         mButton.setText("");
+        for (DataEntry data : mRecordedData) {
+            System.out.println(data);
+        }
     }
 
     private SeekBar.OnSeekBarChangeListener customSeekBarListener = new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 //            System.out.println("Seek bar at: " + progress);
-            seekBarProgress = progress;
+            mSeekBarProgress = progress;
         }
 
         @Override
@@ -246,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     public void onCameraViewStopped() {
 
     }
+
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         System.gc();
@@ -253,42 +269,27 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         setColorSpaceMats(inputFrame.rgba());
 
-        mDeltaTime = System.currentTimeMillis() - mLastTime;
-        mLastTime = System.currentTimeMillis();
+        if (mCurrentState == 0)
+            mTargetH = mSeekBarProgress;
 
-        Mat reMat = mRgbaMat;
+        Mat reMat = pipeline();
 
-        switch (mCurrentState)
-        {
-            case 0: // Tuning sliders to see object
+        if (mCurrentState == 1) {
+            mDeltaTime = System.currentTimeMillis() - mLastTime;
+            mElapsedTime = System.currentTimeMillis() - mStartTime;
+            mLastTime = System.currentTimeMillis();
 
-                break;
-
-
-            case 1: // Recording time vs. position
-
-                reMat = pipeline();
-                break;
-
-
-            case 2: // Stopped
-
-                break;
-
-            default:
-
-                break;
+            mRecordedData.add(new DataEntry(mElapsedTime, mCenterX, mCenterY, mDiameter));
         }
-
 
         return reMat;
     }
 
     private Scalar getLowerBound() {
-        return new Scalar(mTargetHSV.val[0] - mRangeH, mTargetHSV.val[1] - mRangeS, mTargetHSV.val[2] - mRangeV);
+        return new Scalar(mTargetH - mRangeH, mTargetS - mRangeS, mTargetV - mRangeV);
     }
     private Scalar getUpperBound() {
-        return new Scalar(mTargetHSV.val[0] + mRangeH, mTargetHSV.val[1] + mRangeS, mTargetHSV.val[2] + mRangeV);
+        return new Scalar(mTargetH + mRangeH, mTargetS + mRangeS, mTargetV + mRangeV);
     }
 
     private void setColorSpaceMats(Mat inMat) { // Also sets mBgrMat
