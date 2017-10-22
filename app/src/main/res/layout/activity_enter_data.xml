@@ -13,7 +13,8 @@
         android:inputType="textPersonName"
         android:layout_marginTop="200dp"
         android:layout_gravity="center"
-        android:text="Enter the length of your object" />
+        android:hint="Enter the length of your object"
+    />
 
     <Button
         android:id="@+id/send"
