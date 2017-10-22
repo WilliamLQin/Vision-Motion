@@ -19,6 +19,13 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
+import org.apache.commons.math3.analysis.UnivariateFunction;
+import org.apache.commons.math3.analysis.differentiation.DerivativeStructure;
+import org.apache.commons.math3.analysis.differentiation.UnivariateDifferentiableFunction;
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
+import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
+import org.apache.commons.math3.exception.DimensionMismatchException;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +46,15 @@ public class Graphs extends AppCompatActivity implements Serializable {
 
         Bundle bundle = getIntent().getExtras();
         List<DataEntry> entries = bundle.getParcelableArrayList("data");
+
+        double x [] = new double[entries.size()];
+        double y [] = new double[entries.size()];
+
+        for (int i=0;i<entries.size();i++){
+            y[i] = entries.get(i).getX();
+            x[i] = entries.get(i).getSecondTime();
+        }
+
 
 
 
@@ -93,11 +109,26 @@ public class Graphs extends AppCompatActivity implements Serializable {
         List<Entry> velocity = new ArrayList<Entry>();
         List<Entry> acceleration = new ArrayList<Entry>();
 
+        double interpolationX = 0;
+        double interpolatedY = 0;
+
+        UnivariateInterpolator interpolator = new SplineInterpolator();
+        UnivariateFunction function = interpolator.interpolate(x, y);
 
 
-        for(DataEntry data:entries){
-            position.add(new Entry((float) data.getSecondTime() ,(float) data.getX()));
+
+        for (double i = x[0]; i < entries.get(entries.size()-1).getSecondTime(); i+=0.09){
+            interpolationX = i;
+            interpolatedY = function.value(interpolationX);
+            position.add(new Entry((float) interpolationX, (float) interpolatedY));
         }
+
+        //System.out.println("f(" + interpolationX + ") = " + interpolatedY);
+
+
+//        for(DataEntry data:entries){
+//            position.add(new Entry((float) data.getSecondTime() ,(float) data.getX()));
+//        }
 
         System.out.println("Works!!");
         velocity = findDerivative(position);
@@ -151,7 +182,7 @@ public class Graphs extends AppCompatActivity implements Serializable {
         chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
-                //Toast.makeText(getApplicationContext(),"The selected coordinates are (x,y): (" + Float.toString(e.getX()) + "," + Float.toString(e.getY()) + ")",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),"The selected coordinates are (x,y): (" + Float.toString(e.getX()) + "," + Float.toString(e.getY()) + ")",Toast.LENGTH_SHORT).show();
             }
 
             @Override
