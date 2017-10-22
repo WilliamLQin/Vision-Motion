@@ -30,11 +30,13 @@
             <SeekBar
                 android:id="@+id/slider"
                 style="@style/Widget.AppCompat.SeekBar"
-                android:layout_width="450dp"
+                android:layout_width="400dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="100dp"
-                android:layout_marginTop="17dp"
+                android:layout_marginLeft="180dp"
+                android:layout_marginTop="11dp"
                 android:layout_weight="1"
+                android:progressDrawable="@drawable/seekbar_style"
+                android:thumb="@drawable/custom_thumb"
                 android:max="180" />
 
             <Button
@@ -42,6 +44,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:text="go" />
+
+            <Button
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginLeft="90dp"
+                android:text="Back" />
 
         </RelativeLayout>
 

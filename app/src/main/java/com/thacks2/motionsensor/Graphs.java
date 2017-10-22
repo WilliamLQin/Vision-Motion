@@ -383,6 +383,8 @@ public class Graphs extends AppCompatActivity implements Serializable {
 
     private void plotGraphs() {
 
+        final double rate = 0.1;
+
         // Horizontal Motion Graph
         double tx [] = new double[mEntries.size()];
         double dx [] = new double[mEntries.size()];
@@ -399,7 +401,7 @@ public class Graphs extends AppCompatActivity implements Serializable {
         UnivariateInterpolator interpolatorX = new SplineInterpolator();
         UnivariateFunction functionX = interpolatorX.interpolate(tx, dx);
 
-        for (double ix = tx[0]; ix < mEntries.get(mEntries.size()-1).getSecondTime(); ix+=0.2){
+        for (double ix = tx[0]; ix < mEntries.get(mEntries.size()-1).getSecondTime(); ix+=rate){
             positionX.add(new Entry((float) ix, (float) functionX.value(ix)));
 
 
@@ -453,7 +455,7 @@ public class Graphs extends AppCompatActivity implements Serializable {
         UnivariateInterpolator interpolatorY = new SplineInterpolator();
         UnivariateFunction functionY = interpolatorY.interpolate(ty, dy);
 
-        for (double iy = ty[0]; iy < mEntries.get(mEntries.size()-1).getSecondTime(); iy+=0.2){
+        for (double iy = ty[0]; iy < mEntries.get(mEntries.size()-1).getSecondTime(); iy+=rate){
             positionY.add(new Entry((float) iy, (float) functionY.value(iy)));
         }
 

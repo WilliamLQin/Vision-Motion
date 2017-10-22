@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -154,6 +155,19 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             }
         });
 
+        Button back = (Button) findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                backToEnterData();
+            }
+        });
+
+    }
+
+    private void backToEnterData() {
+        Intent intent = new Intent(this, EnterData.class);
+        startActivity(intent);
     }
 
     private void startRecording() {
@@ -265,8 +279,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         Imgproc.cvtColor(inMat, mBgrMat, Imgproc.COLOR_RGBA2BGR);
 
         // Get RGBA
-        mRgbaMat = mBgrMat; // For some reason on a Huawei P10 the output needs to be in BGR
-        //mRgbaMat = inMat;
+        //mRgbaMat = mBgrMat; // For some reason on a Huawei P10 the output needs to be in BGR
+        mRgbaMat = inMat;
 
         // Convert to HSV
         Imgproc.cvtColor(mBgrMat, mHsvMat, Imgproc.COLOR_BGR2HSV);

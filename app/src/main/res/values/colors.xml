@@ -4,4 +4,9 @@
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#999999</color>
     <color name="colorLabel">#ee00fa</color>
+    <color name="colorLanding">#3103a7</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorDekraYellow">#ffffff</color>
+    <color name="colorDekraOrange">#ffffff</color>
 </resources>
