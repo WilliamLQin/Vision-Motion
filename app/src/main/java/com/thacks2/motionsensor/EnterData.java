@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class EnterData extends AppCompatActivity {
 
@@ -31,9 +32,16 @@ public class EnterData extends AppCompatActivity {
     }
 
     public void sendValue(String input) {
-        Intent i = new Intent(this, MainActivity.class);
-        i.putExtra("length", input);
-        startActivity(i);
+        double val;
+        try {
+            val = Double.parseDouble(input);
+            Intent i = new Intent(this, MainActivity.class);
+            i.putExtra("length", val);
+            startActivity(i);
+        }
+        catch (NumberFormatException e) {
+            Toast.makeText(getApplicationContext(),"Please input a number.", Toast.LENGTH_LONG).show();
+        }
     }
 
 //    public void validateInput(String input) {

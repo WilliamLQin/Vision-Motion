@@ -131,13 +131,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         setContentView(R.layout.activity_main);
 
-        try{
-            Bundle bundle = getIntent().getExtras();
-            mObjLength = Double.parseDouble(bundle.getString("length"));
-
-        } catch(Exception e) {
-            System.out.println(e);
-        }
+        mObjLength = getIntent().getExtras().getDouble("length", -1);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
@@ -182,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         b.putParcelableArrayList("data", (mRecordedData));
 //        intent.putExtra("data", (mRecordedData));
         intent.putExtras(b);
+        intent.putExtra("obj_length", mObjLength);
         startActivity(intent);
     }
 
@@ -272,8 +267,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         Imgproc.cvtColor(inMat, mBgrMat, Imgproc.COLOR_RGBA2BGR);
 
         // Get RGBA
-        //mRgbaMat = mBgrMat; // For some reason on a Huawei P10 the output needs to be in BGR
-        mRgbaMat = inMat;
+        mRgbaMat = mBgrMat; // For some reason on a Huawei P10 the output needs to be in BGR
+        //mRgbaMat = inMat;
 
         // Convert to HSV
         Imgproc.cvtColor(mBgrMat, mHsvMat, Imgproc.COLOR_BGR2HSV);

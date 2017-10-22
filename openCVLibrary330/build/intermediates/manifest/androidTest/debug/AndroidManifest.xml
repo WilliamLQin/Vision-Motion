@@ -13,7 +13,7 @@
         android:label="Tests for org.opencv.test"
         android:targetPackage="org.opencv.test" />
 
-    <application android:debuggable="true" >
+    <application>
         <uses-library android:name="android.test.runner" />
     </application>
 

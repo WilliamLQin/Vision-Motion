@@ -1,6 +1,7 @@
 package com.thacks2.motionsensor;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,9 +9,12 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -36,153 +40,129 @@ import java.util.List;
 
 public class Graphs extends AppCompatActivity implements Serializable {
 
+    private double mObjLength;
+    private List<DataEntry> mEntries;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graphs);
-        System.out.println("Graph");
-//        Intent intent = getIntent();
-//        List <DataEntry> entries = intent.getParcelableExtra("data");
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         Bundle bundle = getIntent().getExtras();
-        List<DataEntry> entries = bundle.getParcelableArrayList("data");
+        mEntries = bundle.getParcelableArrayList("data");
+        mObjLength = bundle.getDouble("obj_length", -1.0);
 
-        double x [] = new double[entries.size()];
-        double y [] = new double[entries.size()];
+        Button recordNew = (Button) findViewById(R.id.recordNew);
+        recordNew.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recordNewMotion();
+            }
+        });
 
-        for (int i=0;i<entries.size();i++){
-            y[i] = entries.get(i).getX();
-            x[i] = entries.get(i).getSecondTime();
+        Button retry = (Button) findViewById(R.id.retry);
+        retry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                retryMotion();
+            }
+        });
+
+        Button horDload = (Button) findViewById(R.id.downloadHorizontal);
+        horDload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                downloadHorizontalMotion();
+            }
+        });
+
+        Button verDload = (Button) findViewById(R.id.downloadVertical);
+        verDload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                downloadVerticalMotion();
+            }
+        });
+
+        plotGraphs();
+
+    }
+
+    private void recordNewMotion() {
+        Intent intent = new Intent(this, EnterData.class);
+        startActivity(intent);
+    }
+
+    private void retryMotion() {
+        if (mObjLength > 0) {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("length", mObjLength);
+            startActivity(intent);
+        }
+        else {
+            recordNewMotion();
+        }
+    }
+
+    private void downloadHorizontalMotion() {
+
+    }
+
+    private void downloadVerticalMotion() {
+
+    }
+
+    private void plotGraphs() {
+
+        // Horizontal Motion Graph
+        double tx [] = new double[mEntries.size()];
+        double dx [] = new double[mEntries.size()];
+
+        for (int i=0;i<mEntries.size();i++){
+            dx[i] = mEntries.get(i).getX();
+            tx[i] = mEntries.get(i).getSecondTime();
         }
 
+        List<Entry> positionX = new ArrayList<>();
+        List<Entry> velocityX;
+        List<Entry> accelerationX;
 
+        UnivariateInterpolator interpolatorX = new SplineInterpolator();
+        UnivariateFunction functionX = interpolatorX.interpolate(tx, dx);
 
-
-
-//        mData = (List<MainActivity.DataEntry>)intent.getSerializableExtra("data");
-//
-        for (DataEntry data : entries) {
-            System.out.println(data);
+        for (double ix = tx[0]; ix < mEntries.get(mEntries.size()-1).getSecondTime(); ix+=0.2){
+            positionX.add(new Entry((float) ix, (float) functionX.value(ix)));
         }
 
-//        GraphView graph = (GraphView) findViewById(R.id.graph);
-//        LineGraphSeries series = new LineGraphSeries();
-//
-//        Random mRand = new Random();
-//
-//
-//        DataPoint[] values = new DataPoint[30];
-//        for (int i=0; i<30; i++) {
-//            double x = i;
-//            double f = mRand.nextDouble()*0.15+0.3;
-//            double y = Math.sin(i);
-//            DataPoint v = new DataPoint(x, y);
-//            values[i] = v;
-//        }
-//
-//        LineGraphSeries<DataPoint> mSeries1 ;
-//        mSeries1 = new LineGraphSeries<>(values);
-//
-//        graph.addSeries(mSeries1);
-//
-//
-//        // activate horizontal zooming and scrolling
-//        graph.getViewport().setScalable(true);
-//
-//// activate horizontal scrolling
-//        graph.getViewport().setScrollable(true);
-//
-//// activate horizontal and vertical zooming and scrolling
-//        graph.getViewport().setScalableY(true);
-//
-//// activate vertical scrolling
-//        graph.getViewport().setScrollableY(true);
-//
-//        graph.addSeries(series);
+        velocityX = findDerivative(positionX);
+        accelerationX = findDerivative(velocityX);
+
+        LineDataSet dataSetDx = new LineDataSet(positionX, "Position"); // add entries to dataset
+        LineDataSet dataSetVx = new LineDataSet(velocityX, "Velocity"); // add entries to dataset
+        LineDataSet dataSetAx = new LineDataSet(accelerationX, "Acceleration"); // add entries to dataset\
+
+        dataSetDx.setColor(Color.GREEN);
+        dataSetVx.setColor(Color.RED);
+        dataSetAx.setColor(Color.MAGENTA);
 
 
+        List<ILineDataSet> dataSetsX = new ArrayList<ILineDataSet>();
+        dataSetsX.add(dataSetDx);
+        dataSetsX.add(dataSetVx);
+        //dataSetsX.add(dataSetAx);
+
+        LineData lineDataX = new LineData(dataSetsX);
 
         // in this example, a LineChart is initialized from xml
-        LineChart chart = (LineChart) findViewById(R.id.chart);
-
-        List<Entry> position = new ArrayList<Entry>();
-        List<Entry> velocity = new ArrayList<Entry>();
-        List<Entry> acceleration = new ArrayList<Entry>();
-
-        double interpolationX = 0;
-        double interpolatedY = 0;
-
-        UnivariateInterpolator interpolator = new SplineInterpolator();
-        UnivariateFunction function = interpolator.interpolate(x, y);
-
-
-
-        for (double i = x[0]; i < entries.get(entries.size()-1).getSecondTime(); i+=0.2){
-            interpolationX = i;
-            interpolatedY = function.value(interpolationX);
-            position.add(new Entry((float) interpolationX, (float) interpolatedY));
-        }
-
-        //System.out.println("f(" + interpolationX + ") = " + interpolatedY);
-
-
-//        for(DataEntry data:entries){
-//            position.add(new Entry((float) data.getSecondTime() ,(float) data.getX()));
-//        }
-
-        System.out.println("Works!!");
-        velocity = findDerivative(position);
-        acceleration = findDerivative(velocity);
-
-//        for(float i = 0; i <100; i=i+0.5f){
-//            float derivative = (float)(0.5*Math.cos(i));
-//            velocity.add(new Entry((i) , derivative));
-//        }
-//        for(int i = 1; i < position.size()-1;i++){
-//            float derivativeBefore = (position.get(i).getY() - position.get(i-1).getY()) / (position.get(i).getX() - position.get(i-1).getX());
-//            float derivativeAfter = (position.get(i+1).getY() - position.get(i).getY()) / (position.get(i+1).getX() - position.get(i).getX());
-//            float derivative = (derivativeAfter + derivativeBefore) / 2;
-//            //float derivative = (float)(0.5*Math.cos(i));
-//            velocity.add(new Entry(((position.get(i).getX())) , derivative));
-//        }
-//
-//        for(int i = 1; i < velocity.size()-1;i++){
-//            float derivativeBefore = (velocity.get(i).getY() - velocity.get(i-1).getY()) / (velocity.get(i).getX() - velocity.get(i-1).getX());
-//            float derivativeAfter = (velocity.get(i+1).getY() - velocity.get(i).getY()) / (velocity.get(i+1).getX() - velocity.get(i).getX());
-//            float derivative = (derivativeAfter + derivativeBefore) / 2;
-//            //float derivative = (float)(0.5*Math.cos(i));
-//            acceleration.add(new Entry(((velocity.get(i).getX())) , -1*derivative));
-//        }
-
-//        float averageErr,total = 0f;
-//
-//        for (int i =1; i <acceleration.size()-1;i++){
-//            total+=(((acceleration.get(i).getY()- position.get(i).getY()) / position.get(i).getX())*100);
-//        }
-//        averageErr = (total/(acceleration.size()-2));
-//        Log.v(">>MainActivity", Float.toString(averageErr));
-
-        LineDataSet dataSet = new LineDataSet(position, "X"); // add entries to dataset
-        LineDataSet dataSet2 = new LineDataSet(velocity, "V"); // add entries to dataset
-        LineDataSet dataSet3 = new LineDataSet(acceleration, "A"); // add entries to dataset\
-
-
-        dataSet.setColor(Color.GREEN);
-        dataSet2.setColor(Color.RED);
-        dataSet3.setColor(Color.MAGENTA);
-
-        List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-        dataSets.add(dataSet);
-        dataSets.add(dataSet2);
-        dataSets.add(dataSet3);
-
-        LineData lineData = new LineData(dataSets);
-        chart.setData(lineData);
-        //chart.animateX(3000); // animate horizontal and vertical 3000 milliseconds
-        chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+        LineChart chartX = (LineChart) findViewById(R.id.chartX);
+        chartX.setData(lineDataX);
+        chartX.animateX(3000); // animate horizontal and vertical 3000 milliseconds
+        chartX.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
-                Toast.makeText(getApplicationContext(),"The selected coordinates are (x,y): (" + Float.toString(e.getX()) + "," + Float.toString(e.getY()) + ")",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Selected: (" + Float.toString(e.getX()) + "," + Float.toString(e.getY()) + ")", Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -190,12 +170,80 @@ public class Graphs extends AppCompatActivity implements Serializable {
 
             }
         });
-        chart.setDrawBorders(true);
-        chart.setDrawMarkers(false);
-        chart.setHardwareAccelerationEnabled(true);
-        chart.setDrawMarkers(false);
-        chart.invalidate(); // refresh
+        chartX.setDrawBorders(true);
+        chartX.setDrawMarkers(false);
+        chartX.setHardwareAccelerationEnabled(true);
+        chartX.setDrawMarkers(false);
+        Description descX = new Description();
+        descX.setText("Horizontal Motion");
+        descX.setTextSize(16f);
+        chartX.setDescription(descX);
+        chartX.invalidate(); // refresh
 
+
+        // Vertical Motion Graph
+        double ty [] = new double[mEntries.size()];
+        double dy [] = new double[mEntries.size()];
+
+        for (int i=0;i<mEntries.size();i++){
+            dy[i] = mEntries.get(i).getY();
+            ty[i] = mEntries.get(i).getSecondTime();
+        }
+
+        List<Entry> positionY = new ArrayList<>();
+        List<Entry> velocityY;
+        List<Entry> accelerationY;
+
+        UnivariateInterpolator interpolatorY = new SplineInterpolator();
+        UnivariateFunction functionY = interpolatorY.interpolate(ty, dy);
+
+        for (double iy = ty[0]; iy < mEntries.get(mEntries.size()-1).getSecondTime(); iy+=0.2){
+            positionY.add(new Entry((float) iy, (float) functionY.value(iy)));
+        }
+
+        velocityY = findDerivative(positionY);
+        accelerationY = findDerivative(velocityY);
+
+        LineDataSet dataSetDy = new LineDataSet(positionY, "Position"); // add entries to dataset
+        LineDataSet dataSetVy = new LineDataSet(velocityY, "Velocity"); // add entries to dataset
+        LineDataSet dataSetAy = new LineDataSet(accelerationY, "Acceleration"); // add entries to dataset\
+
+        dataSetDy.setColor(Color.GREEN);
+        dataSetVy.setColor(Color.RED);
+        dataSetAy.setColor(Color.MAGENTA);
+
+
+        List<ILineDataSet> dataSetsY = new ArrayList<ILineDataSet>();
+        dataSetsY.add(dataSetDy);
+        dataSetsY.add(dataSetVy);
+        //dataSetsY.add(dataSetAy);
+
+        LineData lineDataY = new LineData(dataSetsY);
+
+        // in this example, a LineChart is initialized from xml
+        LineChart chartY = (LineChart) findViewById(R.id.chartY);
+        chartY.setData(lineDataY);
+        chartY.animateX(3000); // animate horizontal and vertical 3000 milliseconds
+        chartY.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                Toast.makeText(getApplicationContext(),"Selected: (" + Float.toString(e.getX()) + "," + Float.toString(e.getY()) + ")", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
+        chartY.setDrawBorders(true);
+        chartY.setDrawMarkers(false);
+        chartY.setHardwareAccelerationEnabled(true);
+        chartY.setDrawMarkers(false);
+        Description descY = new Description();
+        descY.setText("Vertical Motion");
+        descY.setTextSize(16f);
+        chartY.setDescription(descY);
+        chartY.invalidate(); // refresh
     }
 
     private List<Entry> findDerivative(List<Entry> function){
@@ -207,8 +255,6 @@ public class Graphs extends AppCompatActivity implements Serializable {
             //float derivative = (float)(0.5*Math.cos(i));
             derivative.add(new Entry(((function.get(i).getX())) , derivativeAtPoint));
         }
-
-
         return derivative;
     }
 
