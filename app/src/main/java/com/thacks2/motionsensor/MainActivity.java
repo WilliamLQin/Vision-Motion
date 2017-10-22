@@ -56,52 +56,70 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private int mCurrentState = 0;
 
     private double mObjLength;
+    private float mStartDiameter;
     private int mSeekBarProgress;
 
     // Time recording
     private long mStartTime, mLastTime, mDeltaTime, mElapsedTime;
     // Position recording
     private double mCenterX, mCenterY;
-    private double mStartX, mStartY;
     // Size recording
     private float mDiameter;
 
     // List to hold recorded data
     public class DataEntry
     {
-        private long time;
+        private double time;
         private double x;
         private double y;
         private float diameter;
+        private double realToPixelsRatio;
 
-        public DataEntry(long time, double x, double y, float diameter)
+        public DataEntry(long time, double x, double y, float diameter, double realToPixelsRatio)
         {
-            this.time = time;
+            this.time = (double)time;
             this.x = x;
             this.y = y;
             this.diameter = diameter;
+            this.realToPixelsRatio = realToPixelsRatio;
         }
 
-        public long getTime()
+        public double getSecondTime()
         {
             return time/1000;
         }
-        public double getX()
+        public double getMillisecondTime()
+        {
+            return time;
+        }
+        public double getRawX()
         {
             return x;
         }
-        public double getY()
+        public double getX()
+        {
+            return getDistanceInUnits(x);
+        }
+        public double getRawY()
         {
             return y;
+        }
+        public double getY()
+        {
+            return getDistanceInUnits(y);
         }
         public float getDiameter()
         {
             return diameter;
         }
 
+        private double getDistanceInUnits(double length) {
+            return realToPixelsRatio * (length);
+        }
+
         @Override
         public String toString() {
-            return "DataEntry: T=" + time + " X=" + x + " Y=" + y + " Diameter=" + diameter;
+            return "DataEntry: T=" + getSecondTime() + " X=" + getX() + " Y=" + getY() + " Diameter=" + getDiameter();
         }
     }
     private List<DataEntry> mRecordedData = new ArrayList<>();
@@ -200,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         mButton.setText("Stop");
         mStartTime = System.currentTimeMillis();
         mTargetH = mSeekBarProgress;
+        mStartDiameter = mDiameter;
     }
 
     private void stopRecording() {
@@ -272,15 +291,14 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         if (mCurrentState == 0)
             mTargetH = mSeekBarProgress;
 
-        Mat reMat = pipeline();
-
         if (mCurrentState == 1) {
             mDeltaTime = System.currentTimeMillis() - mLastTime;
             mElapsedTime = System.currentTimeMillis() - mStartTime;
             mLastTime = System.currentTimeMillis();
 
-            mRecordedData.add(new DataEntry(mElapsedTime, mCenterX, mCenterY, mDiameter));
         }
+
+        Mat reMat = pipeline();
 
         return reMat;
     }
@@ -367,6 +385,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             mCenterY = center.y;
             mDiameter = 2 * radius[0];
 
+            if (mCurrentState == 1)
+                mRecordedData.add(new DataEntry(mElapsedTime, mCenterX, mCenterY, mDiameter, mObjLength/mStartDiameter));
 
             // Draw Minimum Enclosing Circle
             Imgproc.circle(mRgbaMat, center, (int) radius[0], new Scalar(100, 100, 255), 7);
