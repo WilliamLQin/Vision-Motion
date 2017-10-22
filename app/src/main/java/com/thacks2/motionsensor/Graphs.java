@@ -1,5 +1,6 @@
 package com.thacks2.motionsensor;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -26,10 +27,19 @@ import java.util.List;
  */
 
 public class Graphs extends AppCompatActivity {
+    private List<MainActivity.DataEntry> mData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_graphs);
+        System.out.println("Graph");
+        Intent intent = getIntent();
+//        mData = (List<MainActivity.DataEntry>)intent.getSerializableExtra("data");
+//
+//        for (MainActivity.DataEntry data : mData) {
+//            System.out.println(data);
+//        }
 
 //        GraphView graph = (GraphView) findViewById(R.id.graph);
 //        LineGraphSeries series = new LineGraphSeries();

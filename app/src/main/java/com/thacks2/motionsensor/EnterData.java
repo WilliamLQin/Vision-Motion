@@ -24,6 +24,7 @@ public class EnterData extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 inputText = input.getText().toString();
+//                validateInput(inputText);
                 sendValue(inputText);
             }
         });
@@ -34,6 +35,10 @@ public class EnterData extends AppCompatActivity {
         i.putExtra("length", input);
         startActivity(i);
     }
+
+//    public void validateInput(String input) {
+//        if(input == null || input.)
+//    }
 
 
 }

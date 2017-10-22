@@ -1,9 +1,12 @@
 package com.thacks2.motionsensor;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +19,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -67,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private float mDiameter;
 
     // List to hold recorded data
-    public class DataEntry
+    public class DataEntry implements Serializable
     {
         private double time;
         private double x;
@@ -83,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             this.diameter = diameter;
             this.realToPixelsRatio = realToPixelsRatio;
         }
+
 
         public double getSecondTime()
         {
@@ -227,6 +232,9 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         for (DataEntry data : mRecordedData) {
             System.out.println(data);
         }
+        Intent intent = new Intent(this, Graphs.class);
+        intent.putExtra("data", (Serializable) mRecordedData);
+        startActivity(intent);
     }
 
     private SeekBar.OnSeekBarChangeListener customSeekBarListener = new SeekBar.OnSeekBarChangeListener() {
