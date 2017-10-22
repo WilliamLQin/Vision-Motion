@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     }
 
     private Button mButton;
+    private SeekBar mSeekBar;
 
     // Color settings
     private double mTargetH = 60, mTargetS = 155, mTargetV = 155;
@@ -131,14 +132,16 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         setContentView(R.layout.activity_main);
 
-        mObjLength = getIntent().getExtras().getDouble("length", -1);
+        Bundle bundle = getIntent().getExtras();
+
+        mObjLength = bundle.getDouble("length", -1);
 
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.javasurfaceview);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
 
-        SeekBar slider = (SeekBar) findViewById(R.id.slider);
-        slider.setOnSeekBarChangeListener(customSeekBarListener);
+        mSeekBar = (SeekBar) findViewById(R.id.slider);
+        mSeekBar.setOnSeekBarChangeListener(customSeekBarListener);
 
         mButton = (Button) findViewById(R.id.record);
         mButton.setOnClickListener(new View.OnClickListener() {
@@ -170,7 +173,6 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         Intent intent = new Intent(this, Graphs.class);
         Bundle b = new Bundle();
         b.putParcelableArrayList("data", (mRecordedData));
-//        intent.putExtra("data", (mRecordedData));
         intent.putExtras(b);
         intent.putExtra("obj_length", mObjLength);
         startActivity(intent);
