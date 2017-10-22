@@ -47,30 +47,35 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         }
     }
 
-    private TextView mTextView;
+    private Button mButton;
 
     // Color settings
     private Scalar mTargetHSV = new Scalar(60, 155, 155);
     private double mRangeH = 20, mRangeS = 100, mRangeV = 100;
 
-    private int mCurrentState = 1;
+    private int mCurrentState = 0;
 
     // Time recording
     private long mLastTime, mDeltaTime;
     // Position recording
     private double mCenterX, mCenterY;
+    // Size recording
+    private float mDiameter;
+
     // List to hold recorded data
     public class DataEntry
     {
         private long time;
         private double x;
         private double y;
+        private float diameter;
 
-        public DataEntry(long time, double x, double y)
+        public DataEntry(long time, double x, double y, float diameter)
         {
             this.time = time;
             this.x = x;
             this.y = y;
+            this.diameter = diameter;
         }
 
         public long getTime()
@@ -164,29 +169,30 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
 
-        mTextView = (TextView) findViewById(R.id.textview);
-
         SeekBar slider = (SeekBar) findViewById(R.id.slider);
         slider.setOnSeekBarChangeListener(customSeekBarListener);
 
-        final Button record = (Button) findViewById(R.id.record);
-        record.setOnClickListener(new View.OnClickListener() {
+        mButton = (Button) findViewById(R.id.record);
+        mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeButtonText(record);
-
-
+                if (mCurrentState == 1)
+                    stopRecording();
+                else if (mCurrentState == 0)
+                    startRecording();
             }
         });
 
     }
 
-    private void changeButtonText(Button button) {
-        if(button.getText() == "Go") {
-            button.setText("Stop");
-        } else {
-            button.setText("Go");
-        }
+    private void startRecording() {
+        mCurrentState = 1;
+        mButton.setText("Stop");
+    }
+
+    private void stopRecording() {
+        mCurrentState = 2;
+        mButton.setText("");
     }
 
     private SeekBar.OnSeekBarChangeListener customSeekBarListener = new SeekBar.OnSeekBarChangeListener() {
@@ -353,11 +359,12 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             int cX = (int) (moments.get_m10() / moments.get_m00());
             int cY = (int) (moments.get_m01() / moments.get_m00());
 
-            // Set Output Center Value
+            // Set Output Center Value and Diameter
 //            mCenterX = (double) cX;
 //            mCenterY = (double) cY;
             mCenterX = center.x;
             mCenterY = center.y;
+            mDiameter = 2 * radius[0];
 
 
             // Draw Minimum Enclosing Circle
@@ -369,16 +376,6 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             Imgproc.putText(mRgbaMat, "center", new Point(mCenterX - 20, mCenterY - 20), 0, 0.5, new Scalar(160, 255, 255), 2);
 
         }
-
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-                mTextView.setText("Center: (" + mCenterX + ", " + mCenterY + ")");
-
-            }
-        });
 
 //  --------------------------------------------------------------
         // END OpenCV Pipeline
