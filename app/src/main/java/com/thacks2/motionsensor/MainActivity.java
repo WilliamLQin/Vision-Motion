@@ -133,10 +133,6 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         mObjLength = getIntent().getExtras().getDouble("length", -1);
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
-        }
-
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.javasurfaceview);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);

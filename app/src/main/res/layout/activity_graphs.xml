@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="110dp"
             android:layout_weight="1"
-            android:weightSum="2">
+            android:weightSum="3">
 
             <Button
                 android:id="@+id/recordNew"
@@ -41,6 +41,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:text="Retry"
+                android:layout_weight="1"/>
+
+            <Button
+                android:id="@+id/download"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:textSize="12dp"
+                android:text="Download"
                 android:layout_weight="1"/>
 
         </LinearLayout>
@@ -66,21 +74,27 @@
             android:layout_width="match_parent"
             android:layout_height="110dp"
             android:layout_weight="1"
-            android:weightSum="2">
+            android:weightSum="3">
 
             <Button
-                android:id="@+id/downloadHorizontal"
-                android:layout_width="match_parent"
+                android:id="@+id/showPosition"
+                android:layout_width="wrap_content"
                 android:layout_height="55dp"
-                android:text="Download Horizontal"
+                android:text="Pos"
+                android:layout_weight="1"/>
+            <Button
+                android:id="@+id/showVelocity"
+                android:layout_width="wrap_content"
+                android:layout_height="55dp"
+                android:text="Vel"
+                android:layout_weight="1"/>
+            <Button
+                android:id="@+id/showAcceleration"
+                android:layout_width="wrap_content"
+                android:layout_height="55dp"
+                android:text="Acc"
                 android:layout_weight="1"/>
 
-            <Button
-                android:id="@+id/downloadVertical"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:text="Download Vertical"
-                android:layout_weight="1"/>
 
         </LinearLayout>
 
