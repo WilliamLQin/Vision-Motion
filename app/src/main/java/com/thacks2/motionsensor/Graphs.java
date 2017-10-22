@@ -117,7 +117,7 @@ public class Graphs extends AppCompatActivity implements Serializable {
 
 
 
-        for (double i = x[0]; i < entries.get(entries.size()-1).getSecondTime(); i+=0.09){
+        for (double i = x[0]; i < entries.get(entries.size()-1).getSecondTime(); i+=0.2){
             interpolationX = i;
             interpolatedY = function.value(interpolationX);
             position.add(new Entry((float) interpolationX, (float) interpolatedY));
@@ -201,9 +201,9 @@ public class Graphs extends AppCompatActivity implements Serializable {
     private List<Entry> findDerivative(List<Entry> function){
         List<Entry> derivative = new ArrayList<Entry>();
         for(int i = 1; i < function.size()-1;i++){
-            float derivativeBefore = (function.get(i).getY() - function.get(i-1).getY()) / (function.get(i).getX() - function.get(i-1).getX());
-            float derivativeAfter = (function.get(i+1).getY() - function.get(i).getY()) / (function.get(i+1).getX() - function.get(i).getX());
-            float derivativeAtPoint = (derivativeAfter + derivativeBefore) / 2;
+            float derivativeBefore = (function.get(i+1).getY() - function.get(i-1).getY()) / (function.get(i+1).getX() - function.get(i-1).getX());
+            //float derivativeAfter = (function.get(i+1).getY() - function.get(i).getY()) / (function.get(i+1).getX() - function.get(i).getX());
+            float derivativeAtPoint = (derivativeBefore + derivativeBefore) / 2;
             //float derivative = (float)(0.5*Math.cos(i));
             derivative.add(new Entry(((function.get(i).getX())) , derivativeAtPoint));
         }
