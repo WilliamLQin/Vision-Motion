@@ -71,63 +71,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private float mDiameter;
 
     // List to hold recorded data
-    public class DataEntry implements Serializable
-    {
-        private double time;
-        private double x;
-        private double y;
-        private float diameter;
-        private double realToPixelsRatio;
 
-        public DataEntry(long time, double x, double y, float diameter, double realToPixelsRatio)
-        {
-            this.time = (double)time;
-            this.x = x;
-            this.y = y;
-            this.diameter = diameter;
-            this.realToPixelsRatio = realToPixelsRatio;
-        }
-
-
-        public double getSecondTime()
-        {
-            return time/1000;
-        }
-        public double getMillisecondTime()
-        {
-            return time;
-        }
-        public double getRawX()
-        {
-            return x;
-        }
-        public double getX()
-        {
-            return getDistanceInUnits(x);
-        }
-        public double getRawY()
-        {
-            return y;
-        }
-        public double getY()
-        {
-            return getDistanceInUnits(y);
-        }
-        public float getDiameter()
-        {
-            return diameter;
-        }
-
-        private double getDistanceInUnits(double length) {
-            return realToPixelsRatio * (length);
-        }
-
-        @Override
-        public String toString() {
-            return "DataEntry: T=" + getSecondTime() + " X=" + getX() + " Y=" + getY() + " Diameter=" + getDiameter();
-        }
-    }
-    private List<DataEntry> mRecordedData = new ArrayList<>();
+    private ArrayList<DataEntry> mRecordedData = new ArrayList<>();
 
     // Viewport
     private int w, h;
@@ -233,7 +178,10 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             System.out.println(data);
         }
         Intent intent = new Intent(this, Graphs.class);
-        intent.putExtra("data", (Serializable) mRecordedData);
+        Bundle b = new Bundle();
+        b.putParcelableArrayList("data", (mRecordedData));
+//        intent.putExtra("data", (mRecordedData));
+        intent.putExtras(b);
         startActivity(intent);
     }
 

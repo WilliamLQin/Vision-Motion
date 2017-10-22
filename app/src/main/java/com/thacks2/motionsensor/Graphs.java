@@ -19,6 +19,7 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,20 +27,27 @@ import java.util.List;
  * Created by nekhilnagia16 on 10/21/17.
  */
 
-public class Graphs extends AppCompatActivity {
-    private List<MainActivity.DataEntry> mData;
+public class Graphs extends AppCompatActivity implements Serializable {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graphs);
         System.out.println("Graph");
-        Intent intent = getIntent();
+//        Intent intent = getIntent();
+//        List <DataEntry> entries = intent.getParcelableExtra("data");
+
+        Bundle bundle = getIntent().getExtras();
+        List<DataEntry> entries = bundle.getParcelableArrayList("data");
+
+
+
+
 //        mData = (List<MainActivity.DataEntry>)intent.getSerializableExtra("data");
 //
-//        for (MainActivity.DataEntry data : mData) {
-//            System.out.println(data);
-//        }
+        for (DataEntry data : entries) {
+            System.out.println(data);
+        }
 
 //        GraphView graph = (GraphView) findViewById(R.id.graph);
 //        LineGraphSeries series = new LineGraphSeries();
@@ -85,10 +93,13 @@ public class Graphs extends AppCompatActivity {
         List<Entry> velocity = new ArrayList<Entry>();
         List<Entry> acceleration = new ArrayList<Entry>();
 
-        for(float i = 0; i <100; i=i+0.5f){
-            position.add(new Entry(i , (float)(Math.sqrt(i))));
+
+
+        for(DataEntry data:entries){
+            position.add(new Entry((float) data.getSecondTime() ,(float) data.getX()));
         }
 
+        System.out.println("Works!!");
         velocity = findDerivative(position);
         acceleration = findDerivative(velocity);
 
@@ -136,7 +147,7 @@ public class Graphs extends AppCompatActivity {
 
         LineData lineData = new LineData(dataSets);
         chart.setData(lineData);
-        chart.animateX(3000); // animate horizontal and vertical 3000 milliseconds
+        //chart.animateX(3000); // animate horizontal and vertical 3000 milliseconds
         chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
