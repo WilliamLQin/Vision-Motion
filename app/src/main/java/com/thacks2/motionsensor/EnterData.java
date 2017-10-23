@@ -1,6 +1,7 @@
 package com.thacks2.motionsensor;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +19,8 @@ public class EnterData extends AppCompatActivity {
         setContentView(R.layout.activity_enter_data);
 
         final EditText input = (EditText) findViewById(R.id.input);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 
         Button send = (Button) findViewById(R.id.send);
