@@ -9,6 +9,7 @@ import android.media.Image;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +25,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
     private ImageButton mButton;
 
+    private boolean mSettingsOpen = false;
     private int mCurrentState = 0;
     private int mTouchX = 0, mTouchY = 0;
     private boolean mSetTargetToTouch = false;
@@ -73,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
     // Color settings
     private double mTargetH = 60, mTargetS = 155, mTargetV = 155;
-    private double mRangeH = 20, mRangeS = 50, mRangeV = 50;
+    private double mRangeH = 10, mRangeS = 100, mRangeV = 90;
 
     // Time recording
     private long mStartTime, mLastTime, mDeltaTime, mElapsedTime;
@@ -184,12 +187,95 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                     startRecording();
             }
         });
-        // Set listener on back button
+        // Set listener on back button to go back when clicked
         ImageButton back = (ImageButton) findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 backToEnterData();
+            }
+        });
+
+        final ConstraintLayout buttonsView = (ConstraintLayout) findViewById(R.id.buttonsview);
+        final ConstraintLayout infoView = (ConstraintLayout) findViewById(R.id.infoLayout);
+
+        // Set listener on info button to show/hide info view when clicked
+
+        View.OnClickListener infoListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (infoView.getVisibility() == ConstraintLayout.VISIBLE) {
+                    infoView.setVisibility(ConstraintLayout.GONE);
+                    buttonsView.setVisibility(ConstraintLayout.VISIBLE);
+                    mSettingsOpen = false;
+                }
+                else {
+                    infoView.setVisibility(ConstraintLayout.VISIBLE);
+                    buttonsView.setVisibility(ConstraintLayout.GONE);
+                    mSettingsOpen = true;
+                }
+            }
+        };
+        ImageButton info = (ImageButton) findViewById(R.id.info);
+        info.setOnClickListener(infoListener);
+        ImageButton infoCancel = (ImageButton) findViewById(R.id.infoBack);
+        infoCancel.setOnClickListener(infoListener);
+
+        SeekBar sliderH = (SeekBar) findViewById(R.id.sliderHRange);
+        sliderH.setProgress((int)mRangeH);
+        sliderH.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mRangeH = progress;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        SeekBar sliderS = (SeekBar) findViewById(R.id.sliderSRange);
+        sliderS.setProgress((int)mRangeS);
+        sliderS.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mRangeS = progress;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        SeekBar sliderV = (SeekBar) findViewById(R.id.sliderVRange);
+        sliderV.setProgress((int)mRangeV);
+        sliderV.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mRangeV = progress;
+                System.out.println("HSV Range: " + mRangeH + ", " + mRangeS + ", " + mRangeV);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
 
@@ -270,7 +356,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         Mat reMat = pipeline();
 
-        if (mCurrentState == 0) {
+        if (mCurrentState == 0 && !mSettingsOpen) {
             if (mHsvMat != null) {
                 int coorX = -999;
                 int coorY = -999;

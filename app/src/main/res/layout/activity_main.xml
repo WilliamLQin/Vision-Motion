@@ -19,7 +19,8 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/buttonsview">
 
         <ImageButton
             android:id="@+id/record"
@@ -33,7 +34,8 @@
             android:layout_marginRight="8dp"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp" />
 
         <ImageButton
             android:id="@+id/back"
@@ -49,8 +51,105 @@
             android:layout_marginBottom="6dp"
             app:layout_constraintVertical_bias="1.0"
             android:layout_marginLeft="6dp"
-            app:layout_constraintLeft_toLeftOf="parent" />
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="6dp" />
 
+        <ImageButton
+            android:id="@+id/info"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:rotation="-90"
+            android:src="@drawable/info_xxl"
+            android:scaleType="fitCenter"
+            android:backgroundTint="@color/colorNull"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            app:layout_constraintVertical_bias="0.0"
+            android:layout_marginLeft="6dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="6dp" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/infoLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorInfoTint"
+        android:visibility="gone">
+
+        <ImageButton
+            android:id="@+id/infoBack"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:rotation="-90"
+            android:src="@drawable/x_mark"
+            android:scaleType="fitCenter"
+            android:backgroundTint="@color/colorNull"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            app:layout_constraintVertical_bias="0.0"
+            android:layout_marginLeft="6dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="6dp" />
+
+        <SeekBar
+            android:id="@+id/sliderHRange"
+            style="@style/Widget.AppCompat.SeekBar"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:rotation="-90"
+            android:splitTrack="false"
+            android:progressDrawable="@drawable/seekbar_style"
+            android:thumb="@drawable/custom_thumb"
+            android:max="180"
+            android:layout_marginRight="100dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="8dp" />
+
+        <SeekBar
+            android:id="@+id/sliderSRange"
+            style="@style/Widget.AppCompat.SeekBar"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:rotation="-90"
+            android:splitTrack="false"
+            android:progressDrawable="@drawable/seekbar_style"
+            android:thumb="@drawable/custom_thumb"
+            android:max="255"
+            android:layout_marginRight="50dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="8dp" />
+
+        <SeekBar
+            android:id="@+id/sliderVRange"
+            style="@style/Widget.AppCompat.SeekBar"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:rotation="-90"
+            android:splitTrack="false"
+            android:progressDrawable="@drawable/seekbar_style"
+            android:thumb="@drawable/custom_thumb"
+            android:max="255"
+            android:layout_marginRight="0dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="8dp" />
 
     </android.support.constraint.ConstraintLayout>
 

@@ -410,8 +410,8 @@ public class Graphs extends AppCompatActivity implements Serializable {
             positionX.add(new Entry((float)tx[i], (float)dx[i]));
         }
 
-        velocityX = findDerivative(positionX);
-        accelerationX = findDerivative(velocityX);
+        velocityX = findDerivative(positionX, 3);
+        accelerationX = findDerivative(velocityX, 5);
 
         for (Entry entry : positionX) {
             CSVEntry csvEntry = new CSVEntry();
@@ -466,8 +466,8 @@ public class Graphs extends AppCompatActivity implements Serializable {
             positionY.add(new Entry((float)ty[i], (float)dy[i]));
         }
 
-        velocityY = findDerivative(positionY);
-        accelerationY = findDerivative(velocityY);
+        velocityY = findDerivative(positionY, 2);
+        accelerationY = findDerivative(velocityY, 3);
 
         int posYCounter = 0;
         for (Entry entry : positionY) {
@@ -497,10 +497,9 @@ public class Graphs extends AppCompatActivity implements Serializable {
 
     }
 
-    private List<Entry> findDerivative(List<Entry> function){
+    private List<Entry> findDerivative(List<Entry> function, int averageDerivativeRange){
         List<Entry> derivative = new ArrayList<Entry>();
         for(int i = 0; i < function.size();i++){
-            final int averageDerivativeRange = 2;
             float sumDerivatives = 0f;
             int totalDerivatives = 0;
             for (int j = 1; j <= averageDerivativeRange; j++) {
