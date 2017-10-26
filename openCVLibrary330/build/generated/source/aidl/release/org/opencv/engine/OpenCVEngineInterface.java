@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: /Users/williamqin/CreativePortfolio/AndroidStudio/MotionSensor/openCVLibrary330/src/main/aidl/org/opencv/engine/OpenCVEngineInterface.aidl
+ * Original file: M:\\CreativePortfolio\\AndroidStudio\\Projects\\MotionSensor\\openCVLibrary330\\src\\main\\aidl\\org\\opencv\\engine\\OpenCVEngineInterface.aidl
  */
 package org.opencv.engine;
 /**

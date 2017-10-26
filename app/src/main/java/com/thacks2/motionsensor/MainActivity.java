@@ -5,18 +5,25 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
-import android.widget.SeekBar;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -52,18 +59,21 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         }
     }
 
-    private Button mButton;
-    private SeekBar mSeekBar;
+    private ImageButton mButton;
+
+    private int mCurrentState = 0;
+    private int mTouchX = 0, mTouchY = 0;
+    private boolean mSetTargetToTouch = false;
+    private double mObjLength;
+    private float mStartDiameter;
+
+    // Viewport
+    private int mCameraWidth, mCameraHeight;
+    private int mScreenWidth, mScreenHeight;
 
     // Color settings
     private double mTargetH = 60, mTargetS = 155, mTargetV = 155;
-    private double mRangeH = 20, mRangeS = 100, mRangeV = 100;
-
-    private int mCurrentState = 0;
-
-    private double mObjLength;
-    private float mStartDiameter;
-    private int mSeekBarProgress;
+    private double mRangeH = 20, mRangeS = 50, mRangeV = 50;
 
     // Time recording
     private long mStartTime, mLastTime, mDeltaTime, mElapsedTime;
@@ -76,8 +86,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
     private ArrayList<DataEntry> mRecordedData = new ArrayList<>();
 
-    // Viewport
-    private int w, h;
+
 
     // Minimum contour area in percent for contours filtering
     private static double mMinContourArea = 0.99;
@@ -127,24 +136,45 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Set window settings
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_main);
 
-        Bundle bundle = getIntent().getExtras();
+        // Get display resolution
+        Display display = getWindowManager().getDefaultDisplay();
+        android.graphics.Point size = new android.graphics.Point();
+        display.getSize(size);
+        mScreenWidth = size.x;
+        mScreenHeight = size.y;
 
+        // Retrieve information
+        Bundle bundle = getIntent().getExtras();
         mObjLength = bundle.getDouble("length", -1);
 
+        // Setup OpenCV camera view
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.javasurfaceview);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
+        mOpenCvCameraView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (mCurrentState == 0) {
+                        mTouchX = (int)event.getX();
+                        mTouchY = (int)event.getY();
+                        mSetTargetToTouch = true;
+                    }
+                }
+                return false;
+            }
+        });
 
-        mSeekBar = (SeekBar) findViewById(R.id.slider);
-        mSeekBar.setOnSeekBarChangeListener(customSeekBarListener);
-
-        mButton = (Button) findViewById(R.id.record);
+        // Set listener on start/stop button
+        mButton = (ImageButton) findViewById(R.id.record);
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -154,8 +184,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                     startRecording();
             }
         });
-
-        Button back = (Button) findViewById(R.id.back);
+        // Set listener on back button
+        ImageButton back = (ImageButton) findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -172,15 +202,14 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
     private void startRecording() {
         mCurrentState = 1;
-        mButton.setText("Stop");
+        mButton.setImageResource(R.drawable.square_xxl);
         mStartTime = System.currentTimeMillis();
-        mTargetH = mSeekBarProgress;
         mStartDiameter = mDiameter;
     }
 
     private void stopRecording() {
         mCurrentState = 2;
-        mButton.setText("");
+        mButton.setImageResource(R.drawable.circle_xxl);
         for (DataEntry data : mRecordedData) {
             System.out.println(data);
         }
@@ -191,24 +220,6 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         intent.putExtra("obj_length", mObjLength);
         startActivity(intent);
     }
-
-    private SeekBar.OnSeekBarChangeListener customSeekBarListener = new SeekBar.OnSeekBarChangeListener() {
-        @Override
-        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//            System.out.println("Seek bar at: " + progress);
-            mSeekBarProgress = progress;
-        }
-
-        @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {
-
-        }
-
-        @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {
-
-        }
-    };
 
     @Override
     protected void onPause() {
@@ -236,8 +247,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
     @Override
     public void onCameraViewStarted(int width, int height) {
-        w = width;
-        h = height;
+        mCameraWidth = width;
+        mCameraHeight = height;
     }
     @Override
     public void onCameraViewStopped() {
@@ -251,17 +262,45 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         setColorSpaceMats(inputFrame.rgba());
 
-        if (mCurrentState == 0)
-            mTargetH = mSeekBarProgress;
-
         if (mCurrentState == 1) {
             mDeltaTime = System.currentTimeMillis() - mLastTime;
             mElapsedTime = System.currentTimeMillis() - mStartTime;
             mLastTime = System.currentTimeMillis();
-
         }
 
         Mat reMat = pipeline();
+
+        if (mCurrentState == 0) {
+            if (mHsvMat != null) {
+                int coorX = -999;
+                int coorY = -999;
+
+                if (mSetTargetToTouch) {
+                    coorX = mTouchX;
+                    coorY = mTouchY;
+
+                    int diffX = mScreenWidth - mCameraWidth;
+                    int diffY = mScreenHeight - mCameraHeight;
+
+                    coorX -= diffX / 2;
+                    coorY -= diffY / 2;
+
+                    mSetTargetToTouch = false;
+                }
+//                else {
+//                    coorX = (int)mCenterX;
+//                    coorY = (int)mCenterY;
+//                }
+
+                if (coorX >= 0 && coorX < mCameraWidth && coorY >= 0 && coorY < mCameraHeight) {
+                    double[] pixel = mHsvMat.get(coorY, coorX);
+
+                    mTargetH = pixel[0];
+                    mTargetS = pixel[1];
+                    mTargetV = pixel[2];
+                }
+            }
+        }
 
         return reMat;
     }
@@ -279,8 +318,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         Imgproc.cvtColor(inMat, mBgrMat, Imgproc.COLOR_RGBA2BGR);
 
         // Get RGBA
-        //mRgbaMat = mBgrMat; // For some reason on a Huawei P10 the output needs to be in BGR
-        mRgbaMat = inMat;
+        mRgbaMat = mBgrMat; // For some reason on a Huawei P10 the output needs to be in BGR
+        //mRgbaMat = inMat;
 
         // Convert to HSV
         Imgproc.cvtColor(mBgrMat, mHsvMat, Imgproc.COLOR_BGR2HSV);
@@ -348,7 +387,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             mCenterY = center.y;
             mDiameter = 2 * radius[0];
 
-            if (mCurrentState == 1)
+            if (mCurrentState == 1 && mElapsedTime < System.currentTimeMillis() - 1000 && mStartDiameter > 0)
                 mRecordedData.add(new DataEntry(mElapsedTime, mCenterX, mCenterY, mDiameter, mObjLength/mStartDiameter));
 
             // Draw Minimum Enclosing Circle
