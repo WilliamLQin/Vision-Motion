@@ -33,6 +33,7 @@ import org.apache.commons.math3.analysis.differentiation.DerivativeStructure;
 import org.apache.commons.math3.analysis.differentiation.UnivariateDifferentiableFunction;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.apache.commons.math3.exception.DimensionMismatchException;
 import org.apache.commons.math3.geometry.euclidean.threed.Line;
 
@@ -383,28 +384,30 @@ public class Graphs extends AppCompatActivity implements Serializable {
 
     private void plotGraphs() {
 
-        final double rate = 0.1;
+        final double rate = 0.02;
 
         // Horizontal Motion Graph
         double tx [] = new double[mEntries.size()];
         double dx [] = new double[mEntries.size()];
 
         for (int i=0;i<mEntries.size();i++){
-            dx[i] = mEntries.get(i).getX();
             tx[i] = mEntries.get(i).getSecondTime();
+            dx[i] = mEntries.get(i).getX();
         }
 
         List<Entry> positionX = new ArrayList<>();
         List<Entry> velocityX;
         List<Entry> accelerationX;
 
-        UnivariateInterpolator interpolatorX = new SplineInterpolator();
-        UnivariateFunction functionX = interpolatorX.interpolate(tx, dx);
+//        SplineInterpolator interpolatorX = new SplineInterpolator();
+//        PolynomialSplineFunction functionX = interpolatorX.interpolate(tx, dx);
+//
+//        for (double ix = tx[0]; ix < mEntries.get(mEntries.size()-1).getSecondTime(); ix+=rate){
+//            positionX.add(new Entry((float) ix, (float) functionX.value(ix)));
+//        }
 
-        for (double ix = tx[0]; ix < mEntries.get(mEntries.size()-1).getSecondTime(); ix+=rate){
-            positionX.add(new Entry((float) ix, (float) functionX.value(ix)));
-
-
+        for (int i = 0; i < mEntries.size(); i++) {
+            positionX.add(new Entry((float)tx[i], (float)dx[i]));
         }
 
         velocityX = findDerivative(positionX);
@@ -416,12 +419,12 @@ public class Graphs extends AppCompatActivity implements Serializable {
             csvEntry.setHorizontalPosition(entry.getY());
             mSaveData.add(csvEntry);
         }
-        int velXCounter = 1;
+        int velXCounter = 0;
         for (Entry entry : velocityX) {
             mSaveData.get(velXCounter).setHorizontalVelocity(entry.getY());
             velXCounter += 1;
         }
-        int accXCounter = 2;
+        int accXCounter = 0;
         for (Entry entry : accelerationX) {
             mSaveData.get(accXCounter).setHorizontalAcceleration(entry.getY());
             accXCounter += 1;
@@ -452,11 +455,15 @@ public class Graphs extends AppCompatActivity implements Serializable {
         List<Entry> velocityY;
         List<Entry> accelerationY;
 
-        UnivariateInterpolator interpolatorY = new SplineInterpolator();
-        UnivariateFunction functionY = interpolatorY.interpolate(ty, dy);
+//        SplineInterpolator interpolatorY = new SplineInterpolator();
+//        PolynomialSplineFunction functionY = interpolatorY.interpolate(ty, dy);
+//
+//        for (double iy = ty[0]; iy < mEntries.get(mEntries.size()-1).getSecondTime(); iy+=rate){
+//            positionY.add(new Entry((float) iy, (float) functionY.value(iy)));
+//        }
 
-        for (double iy = ty[0]; iy < mEntries.get(mEntries.size()-1).getSecondTime(); iy+=rate){
-            positionY.add(new Entry((float) iy, (float) functionY.value(iy)));
+        for (int i = 0; i < mEntries.size(); i++) {
+            positionY.add(new Entry((float)ty[i], (float)dy[i]));
         }
 
         velocityY = findDerivative(positionY);
@@ -467,12 +474,12 @@ public class Graphs extends AppCompatActivity implements Serializable {
             mSaveData.get(posYCounter).setVerticalPosition(entry.getY());
             posYCounter++;
         }
-        int velYCounter = 1;
+        int velYCounter = 0;
         for (Entry entry : velocityY) {
             mSaveData.get(velYCounter).setVerticalVelocity(entry.getY());
             velYCounter++;
         }
-        int accYCounter = 2;
+        int accYCounter = 0;
         for (Entry entry : accelerationY) {
             mSaveData.get(accYCounter).setVerticalAcceleration(entry.getY());
             accYCounter++;
@@ -492,12 +499,24 @@ public class Graphs extends AppCompatActivity implements Serializable {
 
     private List<Entry> findDerivative(List<Entry> function){
         List<Entry> derivative = new ArrayList<Entry>();
-        for(int i = 1; i < function.size()-1;i++){
-            float derivativeBefore = (function.get(i+1).getY() - function.get(i-1).getY()) / (function.get(i+1).getX() - function.get(i-1).getX());
-            //float derivativeAfter = (function.get(i+1).getY() - function.get(i).getY()) / (function.get(i+1).getX() - function.get(i).getX());
-            float derivativeAtPoint = (derivativeBefore + derivativeBefore) / 2;
-            //float derivative = (float)(0.5*Math.cos(i));
-            derivative.add(new Entry(((function.get(i).getX())) , derivativeAtPoint));
+        for(int i = 0; i < function.size();i++){
+            final int averageDerivativeRange = 2;
+            float sumDerivatives = 0f;
+            int totalDerivatives = 0;
+            for (int j = 1; j <= averageDerivativeRange; j++) {
+                if (i - j >= 0) {
+                    sumDerivatives += (function.get(i).getY() - function.get(i-j).getY()) / (function.get(i).getX() - function.get(i-j).getX());
+                    totalDerivatives ++;
+                }
+                if (i + j < function.size()) {
+                    sumDerivatives += (function.get(i+j).getY() - function.get(i).getY()) / (function.get(i+j).getX() - function.get(i).getX());
+                    totalDerivatives ++;
+                }
+            }
+
+            float derivativeAtPoint = sumDerivatives / totalDerivatives;
+
+            derivative.add(new Entry((function.get(i).getX()) , derivativeAtPoint));
         }
         return derivative;
     }

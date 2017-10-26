@@ -9,4 +9,5 @@
     <color name="colorBlack">#000000</color>
     <color name="colorDekraYellow">#ffffff</color>
     <color name="colorDekraOrange">#ffffff</color>
+    <color name="colorNull">#00ffffff</color>
 </resources>

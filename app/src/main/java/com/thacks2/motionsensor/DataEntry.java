@@ -47,7 +47,7 @@ public class DataEntry implements Parcelable
 
     public double getSecondTime()
     {
-        return time/1000;
+        return time/1000.0;
     }
     public double getMillisecondTime()
     {

@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_weight="1"
         android:weightSum="2"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/chartX"
