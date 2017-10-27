@@ -5,15 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="2"
+    android:orientation="vertical"
     tools:context="com.thacks2.motionsensor.Graphs">
-
 
     <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:layout_weight="1"
         android:weightSum="2"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/chartX"
@@ -23,45 +23,6 @@
             tools:layout_editor_absoluteY="0dp"
             android:layout_weight="1"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="110dp"
-            android:layout_weight="1"
-            android:weightSum="3">
-
-            <Button
-                android:id="@+id/recordNew"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:text="New"
-                android:layout_weight="1"/>
-
-            <Button
-                android:id="@+id/retry"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:text="Retry"
-                android:layout_weight="1"/>
-
-            <Button
-                android:id="@+id/download"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:textSize="12dp"
-                android:text="Download"
-                android:layout_weight="1"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:weightSum="2"
-        android:orientation="vertical" >
-
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/chartY"
             android:layout_width="match_parent"
@@ -70,33 +31,57 @@
             tools:layout_editor_absoluteY="0dp"
             android:layout_weight="1"/>
 
-        <LinearLayout
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:weightSum="6">
+
+        <Button
+            android:id="@+id/recordNew"
             android:layout_width="match_parent"
-            android:layout_height="110dp"
-            android:layout_weight="1"
-            android:weightSum="3">
+            android:layout_height="55dp"
+            android:text="New"
+            android:layout_weight="1"/>
 
-            <Button
-                android:id="@+id/showPosition"
-                android:layout_width="wrap_content"
-                android:layout_height="55dp"
-                android:text="Pos"
-                android:layout_weight="1"/>
-            <Button
-                android:id="@+id/showVelocity"
-                android:layout_width="wrap_content"
-                android:layout_height="55dp"
-                android:text="Vel"
-                android:layout_weight="1"/>
-            <Button
-                android:id="@+id/showAcceleration"
-                android:layout_width="wrap_content"
-                android:layout_height="55dp"
-                android:text="Acc"
-                android:layout_weight="1"/>
+        <Button
+            android:id="@+id/retry"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="Retry"
+            android:layout_weight="1"/>
 
+        <Button
+            android:id="@+id/download"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:textSize="12dp"
+            android:text="Download"
+            android:layout_weight="1"/>
 
-        </LinearLayout>
+        <Button
+            android:id="@+id/showPosition"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="Pos"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/showVelocity"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="Vel"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/showAcceleration"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="Acc"
+            android:layout_weight="1"/>
+
+        
+
 
     </LinearLayout>
 

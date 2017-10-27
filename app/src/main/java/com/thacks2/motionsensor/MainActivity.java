@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private int mScreenWidth, mScreenHeight;
 
     // Color settings
-    private double mTargetH = 60, mTargetS = 155, mTargetV = 155;
+    private double mTargetH = 0, mTargetS = 0, mTargetV = 0;
     private double mRangeH = 10, mRangeS = 100, mRangeV = 90;
 
     // Time recording
