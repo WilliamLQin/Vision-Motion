@@ -1,19 +1,10 @@
 package com.thacks2.motionsensor;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -21,15 +12,10 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AnimationUtils;
-import android.view.animation.RotateAnimation;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
-import android.widget.TextView;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -288,14 +274,14 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
     private void startRecording() {
         mCurrentState = 1;
-        mButton.setImageResource(R.drawable.square_xxl);
+        mButton.setImageResource(R.drawable.main_square);
         mStartTime = System.currentTimeMillis();
         mStartDiameter = mDiameter;
     }
 
     private void stopRecording() {
         mCurrentState = 2;
-        mButton.setImageResource(R.drawable.circle_xxl);
+        mButton.setImageResource(R.drawable.main_circle);
         for (DataEntry data : mRecordedData) {
             System.out.println(data);
         }

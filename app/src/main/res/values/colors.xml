@@ -11,4 +11,7 @@
     <color name="colorSeekProgress">#c7c7c7</color>
     <color name="colorSeekButton">#ffffff</color>
     <color name="colorNull">#00ffffff</color>
+    <color name="colorPosition">#ffff0000</color>
+    <color name="colorVelocity">#ff0000ff</color>
+    <color name="colorAcceleration">#ff00ff00</color>
 </resources>

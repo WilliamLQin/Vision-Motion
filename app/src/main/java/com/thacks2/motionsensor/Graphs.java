@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -119,6 +120,8 @@ public class Graphs extends AppCompatActivity implements Serializable {
 
     private List<CSVEntry> mSaveData = new ArrayList<>();
 
+    private ImageButton mHome, mRetry, mDownload, mPos, mVel, mAcc, mHor, mVer;
+    private int mHorDisplayState, mVerDisplayState; // 0 for display, 1 for backwards, 2 for hidden
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,58 +140,122 @@ public class Graphs extends AppCompatActivity implements Serializable {
         plotGraphs();
         drawGraphs();
 
-        Button recordNew = (Button) findViewById(R.id.recordNew);
-        recordNew.setOnClickListener(new View.OnClickListener() {
+        mHome = (ImageButton) findViewById(R.id.home);
+        mHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 recordNewMotion();
             }
         });
 
-        Button retry = (Button) findViewById(R.id.retry);
-        retry.setOnClickListener(new View.OnClickListener() {
+        mRetry = (ImageButton) findViewById(R.id.retry);
+        mRetry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 retryMotion();
             }
         });
 
-        Button download = (Button) findViewById(R.id.download);
-        download.setOnClickListener(new View.OnClickListener() {
+        mDownload = (ImageButton) findViewById(R.id.download);
+        mDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 downloadMotion();
             }
         });
 
-        Button pos = (Button) findViewById(R.id.showPosition);
-        pos.setOnClickListener(new View.OnClickListener() {
+        mPos = (ImageButton) findViewById(R.id.showPosition);
+        mPos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showHidePosition();
+                if (!mShowPos) {
+                    mPos.setImageResource(R.drawable.graph_position_disabled);
+                }
+                else {
+                    mPos.setImageResource(R.drawable.graph_position_coloured);
+                }
             }
         });
 
-        Button vel = (Button) findViewById(R.id.showVelocity);
-        vel.setOnClickListener(new View.OnClickListener() {
+        mVel = (ImageButton) findViewById(R.id.showVelocity);
+        mVel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showHideVelocity();
+                if (!mShowVel) {
+                    mVel.setImageResource(R.drawable.graph_velocity_disabled);
+                }
+                else {
+                    mVel.setImageResource(R.drawable.graph_velocity_coloured);
+                }
             }
         });
 
-        Button acc = (Button) findViewById(R.id.showAcceleration);
-        acc.setOnClickListener(new View.OnClickListener() {
+        mAcc = (ImageButton) findViewById(R.id.showAcceleration);
+        mAcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showHideAcceleration();
+                if (!mShowAcc) {
+                    mAcc.setImageResource(R.drawable.graph_acceleration_disabled);
+                }
+                else {
+                    mAcc.setImageResource(R.drawable.graph_acceleration_coloured);
+                }
+            }
+        });
+
+        mHor = (ImageButton) findViewById(R.id.showHorizontal);
+        mHor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mHorDisplayState == 2) { // Going from disabled state to normal state
+                    mChartX.setVisibility(LineChart.VISIBLE);
+                    mHor.setImageResource(R.drawable.graph_horizontal);
+                    mHor.setRotation(0);
+                    mHorDisplayState = 0;
+                }
+                else if (mHorDisplayState == 1) { // Going from flipped state to disabled state
+                    mChartX.setVisibility(LineChart.GONE);
+                    mHor.setImageResource(R.drawable.graph_xmark_disabled);
+                    mHor.setRotation(0);
+                    mHorDisplayState = 2;
+                }
+                else { // Going from normal state to flipped state
+                    mHor.setRotation(180);
+                    mHorDisplayState = 1;
+                }
+            }
+        });
+
+        mVer = (ImageButton) findViewById(R.id.showVertical);
+        mVer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mVerDisplayState == 2) { // Going from disabled state to normal state
+                    mChartY.setVisibility(LineChart.VISIBLE);
+                    mVer.setImageResource(R.drawable.graph_vertical);
+                    mVer.setRotation(0);
+                    mVerDisplayState = 0;
+                }
+                else if (mVerDisplayState == 1) { // Going from flipped state to disabled state
+                    mChartY.setVisibility(LineChart.GONE);
+                    mVer.setImageResource(R.drawable.graph_xmark_disabled);
+                    mVer.setRotation(0);
+                    mVerDisplayState = 2;
+                }
+                else { // Going from normal state to flipped state
+                    mVer.setRotation(180);
+                    mVerDisplayState = 1;
+                }
             }
         });
 
     }
 
     private void recordNewMotion() {
-        Intent intent = new Intent(this, EnterData.class);
+        Intent intent = new Intent(this, Landing.class);
         startActivity(intent);
     }
 
@@ -222,7 +289,7 @@ public class Graphs extends AppCompatActivity implements Serializable {
 
     public void promptForName() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Title");
+        builder.setTitle("Enter name for file:");
 
 // Set up the input
         final EditText input = new EditText(this);
@@ -337,7 +404,6 @@ public class Graphs extends AppCompatActivity implements Serializable {
         mChartX.setDrawBorders(true);
         mChartX.setDrawMarkers(false);
         mChartX.setHardwareAccelerationEnabled(true);
-        mChartX.setDrawMarkers(false);
         Description descX = new Description();
         descX.setText("Horizontal Motion");
         descX.setTextSize(16f);
@@ -373,7 +439,6 @@ public class Graphs extends AppCompatActivity implements Serializable {
         mChartY.setDrawBorders(true);
         mChartY.setDrawMarkers(false);
         mChartY.setHardwareAccelerationEnabled(true);
-        mChartY.setDrawMarkers(false);
         Description descY = new Description();
         descY.setText("Vertical Motion");
         descY.setTextSize(16f);
@@ -436,9 +501,10 @@ public class Graphs extends AppCompatActivity implements Serializable {
         mDataSetVx = new LineDataSet(velocityX, "Velocity"); // add entries to dataset
         mDataSetAx = new LineDataSet(accelerationX, "Acceleration"); // add entries to dataset\
 
-        mDataSetDx.setColor(Color.GREEN);
-        mDataSetVx.setColor(Color.RED);
-        mDataSetAx.setColor(Color.MAGENTA);
+        mDataSetDx.setColor(Color.RED);
+        mDataSetDx.setCircleRadius(0.05f);
+        mDataSetVx.setColor(Color.BLUE);
+        mDataSetAx.setColor(Color.GREEN);
 
 
 
@@ -491,9 +557,9 @@ public class Graphs extends AppCompatActivity implements Serializable {
         mDataSetVy = new LineDataSet(velocityY, "Velocity"); // add entries to dataset
         mDataSetAy = new LineDataSet(accelerationY, "Acceleration"); // add entries to dataset\
 
-        mDataSetDy.setColor(Color.GREEN);
-        mDataSetVy.setColor(Color.RED);
-        mDataSetAy.setColor(Color.MAGENTA);
+        mDataSetDy.setColor(Color.RED);
+        mDataSetVy.setColor(Color.BLUE);
+        mDataSetAy.setColor(Color.GREEN);
 
     }
 

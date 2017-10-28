@@ -2,12 +2,12 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
         android:id="@android:id/background"
-        android:drawable="@drawable/border_shadow" >
+        android:drawable="@drawable/slider_border_shadow" >
     </item>
 
     <item
         android:id="@android:id/progress" >
         <clip
-            android:drawable="@drawable/seekbar_progress" />
+            android:drawable="@drawable/slider_seekbar_progress" />
     </item>
 </layer-list>
