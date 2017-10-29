@@ -40,7 +40,8 @@ public class Landing extends AppCompatActivity {
 
     private void launchActivity() {
         System.out.println("switch");
-        Intent intent = new Intent(this, EnterData.class);
+//        Intent intent = new Intent(this, EnterData.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 

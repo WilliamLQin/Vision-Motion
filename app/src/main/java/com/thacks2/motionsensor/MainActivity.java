@@ -12,8 +12,11 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,8 +56,10 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private int mCurrentState = 0;
     private int mTouchX = 0, mTouchY = 0;
     private boolean mSetTargetToTouch = false;
-    private double mObjLength;
-    private float mStartDiameter;
+
+//    private double mObjLength;
+//    private float mStartDiameter;
+    private double mRealToPixelsRatio = -1;
 
     // Viewport
     private int mCameraWidth, mCameraHeight;
@@ -62,7 +67,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
     // Color settings
     private double mTargetH = 0, mTargetS = 0, mTargetV = 0;
-    private double mRangeH = 15, mRangeS = 100, mRangeV = 90;
+    private double mRangeH = 7, mRangeS = 100, mRangeV = 90;
+    private double mDefaultRangeH = 7, mDefaultRangeS = 100, mDefaultRangeV = 90;
 
     // Time recording
     private long mStartTime, mLastTime, mDeltaTime, mElapsedTime;
@@ -78,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
 
     // Minimum contour area in percent for contours filtering
-    private static double mMinContourArea = 0.99;
+//    private static double mMinContourArea = 0.99;
 
     // Cache
     private List<MatOfPoint> mContours = new ArrayList<>();
@@ -141,8 +147,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         mScreenHeight = size.y;
 
         // Retrieve information
-        Bundle bundle = getIntent().getExtras();
-        mObjLength = bundle.getDouble("length", -1);
+//        Bundle bundle = getIntent().getExtras();
+//        mObjLength = bundle.getDouble("length", -1);
 
         // Setup OpenCV camera view
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.javasurfaceview);
@@ -183,31 +189,51 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 //        });
 
         final ConstraintLayout buttonsView = (ConstraintLayout) findViewById(R.id.buttonsview);
-        final ConstraintLayout infoView = (ConstraintLayout) findViewById(R.id.infoLayout);
+        final ConstraintLayout settingsView = (ConstraintLayout) findViewById(R.id.settingsLayout);
 
-        // Set listener on info button to show/hide info view when clicked
+        // Set listener on settings button to show/hide settings view when clicked
 
-        View.OnClickListener infoListener = new View.OnClickListener() {
+        View.OnClickListener settingsListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (infoView.getVisibility() == ConstraintLayout.VISIBLE) {
-                    infoView.setVisibility(ConstraintLayout.GONE);
+                if (settingsView.getVisibility() == ConstraintLayout.VISIBLE) {
+                    settingsView.setVisibility(ConstraintLayout.GONE);
                     buttonsView.setVisibility(ConstraintLayout.VISIBLE);
                     mSettingsOpen = false;
                 }
                 else {
-                    infoView.setVisibility(ConstraintLayout.VISIBLE);
+                    settingsView.setVisibility(ConstraintLayout.VISIBLE);
                     buttonsView.setVisibility(ConstraintLayout.GONE);
                     mSettingsOpen = true;
                 }
             }
         };
-        ImageButton info = (ImageButton) findViewById(R.id.info);
-        info.setOnClickListener(infoListener);
-        ImageButton infoCancel = (ImageButton) findViewById(R.id.infoBack);
-        infoCancel.setOnClickListener(infoListener);
+        ImageButton settings = (ImageButton) findViewById(R.id.settings);
+        settings.setOnClickListener(settingsListener);
+        ImageButton settingsCancel = (ImageButton) findViewById(R.id.settingsBack);
+        settingsCancel.setOnClickListener(settingsListener);
 
-        SeekBar sliderH = (SeekBar) findViewById(R.id.sliderHRange);
+        final EditText input = (EditText) findViewById(R.id.input);
+
+        Button calibrate = (Button) findViewById(R.id.calibrate);
+        calibrate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    double objLength = Double.parseDouble(input.getText().toString());
+                    mRealToPixelsRatio = objLength/mDiameter;
+                    Toast.makeText(getApplicationContext(),"Camera successfully calibrated!", Toast.LENGTH_LONG).show();
+                }
+                catch (NumberFormatException e) {
+                    Toast.makeText(getApplicationContext(),"Please input a number.", Toast.LENGTH_LONG).show();
+                }
+                catch (Exception e) {
+                    Toast.makeText(getApplicationContext(),"Unknown error occurred. Please make sure that there is a detected object.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        final SeekBar sliderH = (SeekBar) findViewById(R.id.sliderHRange);
         sliderH.setProgress((int)mRangeH);
         sliderH.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -226,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             }
         });
 
-        SeekBar sliderS = (SeekBar) findViewById(R.id.sliderSRange);
+        final SeekBar sliderS = (SeekBar) findViewById(R.id.sliderSRange);
         sliderS.setProgress((int)mRangeS);
         sliderS.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -245,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             }
         });
 
-        SeekBar sliderV = (SeekBar) findViewById(R.id.sliderVRange);
+        final SeekBar sliderV = (SeekBar) findViewById(R.id.sliderVRange);
         sliderV.setProgress((int)mRangeV);
         sliderV.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -265,6 +291,19 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             }
         });
 
+        Button restoreDefaults = (Button) findViewById(R.id.restoreDefaults);
+        restoreDefaults.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRangeH = mDefaultRangeH;
+                mRangeS = mDefaultRangeS;
+                mRangeV = mDefaultRangeV;
+                sliderH.setProgress((int)mRangeH);
+                sliderS.setProgress((int)mRangeS);
+                sliderV.setProgress((int)mRangeV);
+            }
+        });
+
     }
 
 //    private void backToEnterData() {
@@ -273,13 +312,17 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 //    }
 
     private void startRecording() {
+        if (mRealToPixelsRatio == -1) {
+            Toast.makeText(getApplicationContext(),"Please calibrate the camera in settings (gear icon).", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         if (mRecordedData.size() != 0) {
             mRecordedData.clear();
         }
 
         mButton.setImageResource(R.drawable.main_square);
         mStartTime = System.currentTimeMillis();
-        mStartDiameter = mDiameter;
         mDeltaTime = System.currentTimeMillis() - mLastTime;
         mElapsedTime = System.currentTimeMillis() - mStartTime;
         mLastTime = System.currentTimeMillis();
@@ -350,7 +393,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         Mat reMat = pipeline();
 
         if (mCurrentState == 0) {
-            if (mHsvMat != null && !mSettingsOpen) { // prevent changing target while in settings
+            if (mHsvMat != null) { // use && !mSettingsOpen to prevent changing target while in settings
                 int coorX = -999;
                 int coorY = -999;
 
@@ -419,24 +462,31 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         // Find max contour area
         double maxArea = 0;
+        MatOfPoint maxContour = null;
         Iterator<MatOfPoint> each = mPreContours.iterator();
         while (each.hasNext()) {
             MatOfPoint wrapper = each.next();
             double area = Imgproc.contourArea(wrapper);
-            if (area > maxArea)
+            if (area > maxArea) {
                 maxArea = area;
+                maxContour = wrapper;
+            }
         }
 
         // Filter contours by area and resize to fit the original image size
         mContours.clear();
-        each = mPreContours.iterator();
-        while (each.hasNext()) {
-            MatOfPoint contour = each.next();
-            if (Imgproc.contourArea(contour) > mMinContourArea * maxArea) {
-                Core.multiply(contour, new Scalar(1, 1), contour);
-                mContours.add(contour);
-            }
-        }
+//        each = mPreContours.iterator();
+//        while (each.hasNext()) {
+//            MatOfPoint contour = each.next();
+//            if (Imgproc.contourArea(contour) > mMinContourArea * maxArea) {
+//                Core.multiply(contour, new Scalar(1, 1), contour);
+//                mContours.add(contour);
+//            }
+//        }
+        if (maxContour != null)
+            mContours.add(maxContour);
+        else
+            return mRgbaMat;
 
         // Draw Contours
         Imgproc.drawContours(mRgbaMat, mContours, -1, new Scalar(255, 255, 255), -1);
@@ -466,8 +516,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             mCenterY = center.y;
             mDiameter = 2 * radius[0];
 
-            if (mCurrentState == 1 && mElapsedTime < System.currentTimeMillis() - 1000 && mStartDiameter > 0)
-                mRecordedData.add(new DataEntry(mElapsedTime, mCenterX, mCenterY, mDiameter, mObjLength/mStartDiameter, mCameraWidth, mCameraHeight));
+            if (mCurrentState == 1 && mElapsedTime < System.currentTimeMillis() - 1000 && mRealToPixelsRatio != -1)
+                mRecordedData.add(new DataEntry(mElapsedTime, mCenterX, mCenterY, mDiameter, mRealToPixelsRatio, mCameraWidth, mCameraHeight));
 
             // Draw Minimum Enclosing Circle
             Imgproc.circle(mRgbaMat, center, (int) radius[0], new Scalar(100, 100, 255), 7);

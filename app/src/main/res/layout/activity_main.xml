@@ -55,47 +55,109 @@
             <!--android:layout_marginStart="6dp" />-->
 
         <ImageButton
-            android:id="@+id/info"
+            android:id="@+id/settings"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:rotation="-90"
-            android:src="@drawable/main_info"
+            android:src="@drawable/main_settings"
             android:scaleType="fitCenter"
             android:backgroundTint="@color/colorNull"
             app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginRight="13dp"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <ImageButton
+            android:id="@+id/info"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/main_info"
+            android:scaleType="fitCenter"
+            android:backgroundTint="@color/colorNull"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
-            app:layout_constraintVertical_bias="0.0"
-            android:layout_marginLeft="6dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginStart="6dp" />
+            android:layout_marginRight="13dp"
+            android:layout_marginBottom="24dp"
+            app:layout_constraintRight_toRightOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/infoLayout"
+        android:id="@+id/settingsLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorInfoTint"
         android:visibility="gone">
 
         <ImageButton
-            android:id="@+id/infoBack"
+            android:id="@+id/settingsBack"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:rotation="-90"
             android:src="@drawable/main_xmark"
             android:scaleType="fitCenter"
             android:backgroundTint="@color/colorNull"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
-            app:layout_constraintVertical_bias="0.0"
-            android:layout_marginLeft="6dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginRight="13dp"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/colorWhite"
+            android:text="Select and measure the length \n of an object the same distance from \n the camera as the moving object."
+            android:textSize="16sp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginLeft="24dp"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <EditText
+            android:id="@+id/input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="13"
+            android:inputType="numberDecimal"
+            android:layout_gravity="center"
+            android:hint="Input in metres."
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorWhite"
+            android:textSize="16sp"
+            android:orientation="vertical"
+            android:layout_marginLeft="24dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginStart="6dp" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="70dp" />
+
+        <Button
+            android:id="@+id/calibrate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Calibrate"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/input"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="@+id/input"
+            android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="@+id/input" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/colorWhite"
+            android:text="Change HSV range threshold"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/sliderHRange"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="@+id/sliderHRange"
+            android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="@+id/sliderHRange" />
 
         <SeekBar
             android:id="@+id/sliderHRange"
@@ -103,17 +165,14 @@
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:rotation="-90"
             android:splitTrack="false"
             android:progressDrawable="@drawable/slider_seekbar_style"
             android:thumb="@drawable/slider_custom_thumb"
             android:max="180"
-            android:layout_marginRight="100dp"
+            android:layout_marginRight="16dp"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/sliderSRange" />
 
         <SeekBar
             android:id="@+id/sliderSRange"
@@ -121,17 +180,14 @@
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:rotation="-90"
             android:splitTrack="false"
             android:progressDrawable="@drawable/slider_seekbar_style"
             android:thumb="@drawable/slider_custom_thumb"
             android:max="255"
-            android:layout_marginRight="50dp"
+            android:layout_marginRight="16dp"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/sliderVRange" />
 
         <SeekBar
             android:id="@+id/sliderVRange"
@@ -139,17 +195,26 @@
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:rotation="-90"
             android:splitTrack="false"
             android:progressDrawable="@drawable/slider_seekbar_style"
             android:thumb="@drawable/slider_custom_thumb"
             android:max="255"
-            android:layout_marginRight="0dp"
+            android:layout_marginRight="16dp"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/restoreDefaults"  />
+
+        <Button
+            android:id="@+id/restoreDefaults"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Restore Defaults"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="@+id/sliderVRange"
+            android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="@+id/sliderVRange" />
 
     </android.support.constraint.ConstraintLayout>
 
