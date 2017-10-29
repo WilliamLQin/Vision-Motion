@@ -1,19 +1,10 @@
 package com.thacks2.motionsensor;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -21,15 +12,10 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AnimationUtils;
-import android.view.animation.RotateAnimation;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
-import android.widget.TextView;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -75,8 +61,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private int mScreenWidth, mScreenHeight;
 
     // Color settings
-    private double mTargetH = 60, mTargetS = 155, mTargetV = 155;
-    private double mRangeH = 10, mRangeS = 100, mRangeV = 90;
+    private double mTargetH = 0, mTargetS = 0, mTargetV = 0;
+    private double mRangeH = 15, mRangeS = 100, mRangeV = 90;
 
     // Time recording
     private long mStartTime, mLastTime, mDeltaTime, mElapsedTime;
@@ -187,14 +173,14 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                     startRecording();
             }
         });
-        // Set listener on back button to go back when clicked
-        ImageButton back = (ImageButton) findViewById(R.id.back);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                backToEnterData();
-            }
-        });
+        // Set listener on back button to go back when clicked NOT NEEDED BECAUSE ANDROID HAS BACK
+//        ImageButton back = (ImageButton) findViewById(R.id.back);
+//        back.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                backToEnterData();
+//            }
+//        });
 
         final ConstraintLayout buttonsView = (ConstraintLayout) findViewById(R.id.buttonsview);
         final ConstraintLayout infoView = (ConstraintLayout) findViewById(R.id.infoLayout);
@@ -281,21 +267,29 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
     }
 
-    private void backToEnterData() {
-        Intent intent = new Intent(this, EnterData.class);
-        startActivity(intent);
-    }
+//    private void backToEnterData() {
+//        Intent intent = new Intent(this, EnterData.class);
+//        startActivity(intent);
+//    }
 
     private void startRecording() {
-        mCurrentState = 1;
-        mButton.setImageResource(R.drawable.square_xxl);
+        if (mRecordedData.size() != 0) {
+            mRecordedData.clear();
+        }
+
+        mButton.setImageResource(R.drawable.main_square);
         mStartTime = System.currentTimeMillis();
         mStartDiameter = mDiameter;
+        mDeltaTime = System.currentTimeMillis() - mLastTime;
+        mElapsedTime = System.currentTimeMillis() - mStartTime;
+        mLastTime = System.currentTimeMillis();
+
+        mCurrentState = 1;
     }
 
     private void stopRecording() {
-        mCurrentState = 2;
-        mButton.setImageResource(R.drawable.circle_xxl);
+        mCurrentState = 0;
+        mButton.setImageResource(R.drawable.main_circle);
         for (DataEntry data : mRecordedData) {
             System.out.println(data);
         }
@@ -303,7 +297,6 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         Bundle b = new Bundle();
         b.putParcelableArrayList("data", (mRecordedData));
         intent.putExtras(b);
-        intent.putExtra("obj_length", mObjLength);
         startActivity(intent);
     }
 
@@ -356,8 +349,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         Mat reMat = pipeline();
 
-        if (mCurrentState == 0 && !mSettingsOpen) {
-            if (mHsvMat != null) {
+        if (mCurrentState == 0) {
+            if (mHsvMat != null && !mSettingsOpen) { // prevent changing target while in settings
                 int coorX = -999;
                 int coorY = -999;
 
@@ -461,10 +454,10 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
 
             // Get Center
-            Moments moments = Imgproc.moments(contour);
-
-            int cX = (int) (moments.get_m10() / moments.get_m00());
-            int cY = (int) (moments.get_m01() / moments.get_m00());
+//            Moments moments = Imgproc.moments(contour);
+//
+//            int cX = (int) (moments.get_m10() / moments.get_m00());
+//            int cY = (int) (moments.get_m01() / moments.get_m00());
 
             // Set Output Center Value and Diameter
 //            mCenterX = (double) cX;
@@ -474,7 +467,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             mDiameter = 2 * radius[0];
 
             if (mCurrentState == 1 && mElapsedTime < System.currentTimeMillis() - 1000 && mStartDiameter > 0)
-                mRecordedData.add(new DataEntry(mElapsedTime, mCenterX, mCenterY, mDiameter, mObjLength/mStartDiameter));
+                mRecordedData.add(new DataEntry(mElapsedTime, mCenterX, mCenterY, mDiameter, mObjLength/mStartDiameter, mCameraWidth, mCameraHeight));
 
             // Draw Minimum Enclosing Circle
             Imgproc.circle(mRgbaMat, center, (int) radius[0], new Scalar(100, 100, 255), 7);

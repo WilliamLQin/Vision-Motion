@@ -5,15 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="2"
+    android:orientation="vertical"
     tools:context="com.thacks2.motionsensor.Graphs">
-
 
     <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:layout_weight="1"
         android:weightSum="2"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/chartX"
@@ -23,45 +23,6 @@
             tools:layout_editor_absoluteY="0dp"
             android:layout_weight="1"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="110dp"
-            android:layout_weight="1"
-            android:weightSum="3">
-
-            <Button
-                android:id="@+id/recordNew"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:text="New"
-                android:layout_weight="1"/>
-
-            <Button
-                android:id="@+id/retry"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:text="Retry"
-                android:layout_weight="1"/>
-
-            <Button
-                android:id="@+id/download"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:textSize="12dp"
-                android:text="Download"
-                android:layout_weight="1"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:weightSum="2"
-        android:orientation="vertical" >
-
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/chartY"
             android:layout_width="match_parent"
@@ -70,33 +31,100 @@
             tools:layout_editor_absoluteY="0dp"
             android:layout_weight="1"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="110dp"
-            android:layout_weight="1"
-            android:weightSum="3">
-
-            <Button
-                android:id="@+id/showPosition"
-                android:layout_width="wrap_content"
-                android:layout_height="55dp"
-                android:text="Pos"
-                android:layout_weight="1"/>
-            <Button
-                android:id="@+id/showVelocity"
-                android:layout_width="wrap_content"
-                android:layout_height="55dp"
-                android:text="Vel"
-                android:layout_weight="1"/>
-            <Button
-                android:id="@+id/showAcceleration"
-                android:layout_width="wrap_content"
-                android:layout_height="55dp"
-                android:text="Acc"
-                android:layout_weight="1"/>
+    </LinearLayout>
 
 
-        </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="110dp">
+
+        <!--<ImageButton-->
+            <!--android:id="@+id/retry"-->
+            <!--android:layout_width="65dp"-->
+            <!--android:layout_height="55dp"-->
+            <!--android:padding="5dp"-->
+            <!--android:background="@color/colorNull"-->
+            <!--android:scaleType="fitCenter"-->
+            <!--android:src="@drawable/graph_new"/>-->
+
+        <ImageButton
+            android:id="@+id/home"
+            android:layout_width="65dp"
+            android:layout_height="55dp"
+            android:padding="5dp"
+            android:background="@color/colorNull"
+            android:scaleType="fitCenter"
+            android:src="@drawable/graph_home"/>
+
+        <ImageButton
+            android:id="@+id/download"
+            android:layout_width="65dp"
+            android:layout_height="55dp"
+            android:padding="5dp"
+            android:background="@color/colorNull"
+            android:scaleType="fitCenter"
+            android:src="@drawable/graph_download"/>
+
+        <ImageButton
+            android:id="@+id/showPosition"
+            android:layout_width="65dp"
+            android:layout_height="55dp"
+            android:padding="5dp"
+            android:background="@color/colorNull"
+            android:scaleType="fitCenter"
+            android:src="@drawable/graph_position_coloured"/>
+        <ImageButton
+            android:id="@+id/showVelocity"
+            android:layout_width="65dp"
+            android:layout_height="55dp"
+            android:padding="5dp"
+            android:background="@color/colorNull"
+            android:scaleType="fitCenter"
+            android:src="@drawable/graph_velocity_coloured"/>
+        <ImageButton
+            android:id="@+id/showAcceleration"
+            android:layout_width="65dp"
+            android:layout_height="55dp"
+            android:padding="5dp"
+            android:background="@color/colorNull"
+            android:scaleType="fitCenter"
+            android:src="@drawable/graph_acceleration_disabled"/>
+
+        <ImageButton
+            android:id="@+id/showHorizontal"
+            android:layout_width="65dp"
+            android:layout_height="55dp"
+            android:padding="5dp"
+            android:background="@color/colorNull"
+            android:scaleType="fitCenter"
+            android:src="@drawable/graph_horizontal"
+            android:rotation="0"/>
+        <ImageButton
+            android:id="@+id/showVertical"
+            android:layout_width="65dp"
+            android:layout_height="55dp"
+            android:padding="5dp"
+            android:background="@color/colorNull"
+            android:scaleType="fitCenter"
+            android:src="@drawable/graph_vertical"
+            android:rotation="0"/>
+
+        <ImageButton
+            android:id="@+id/regression"
+            android:layout_width="65dp"
+            android:layout_height="55dp"
+            android:padding="5dp"
+            android:background="@color/colorNull"
+            android:scaleType="fitCenter"
+            android:src="@drawable/graph_regression_disabled"
+            android:rotation="0"/>
+
+        <Spinner
+            android:id="@+id/regressionDegree"
+            android:layout_width="65dp"
+            android:layout_height="55dp"
+            android:padding="5dp"
+            android:spinnerMode="dropdown"/>
 
     </LinearLayout>
 

@@ -39,7 +39,7 @@
 
     <Button
         android:id="@+id/send"
-        android:background="@drawable/round_button"
+        android:background="@drawable/slider_round_button"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="center"
