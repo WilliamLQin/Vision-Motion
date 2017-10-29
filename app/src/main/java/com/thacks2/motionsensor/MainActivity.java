@@ -2,6 +2,7 @@ package com.thacks2.motionsensor;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -52,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
     private ImageButton mButton;
 
-    private boolean mSettingsOpen = false;
     private int mCurrentState = 0;
     private int mTouchX = 0, mTouchY = 0;
     private boolean mSetTargetToTouch = false;
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private double mDefaultRangeH = 7, mDefaultRangeS = 100, mDefaultRangeV = 90;
 
     // Time recording
-    private long mStartTime, mLastTime, mDeltaTime, mElapsedTime;
+    private long mStartTime, mElapsedTime;
     // Position recording
     private double mCenterX, mCenterY;
     // Size recording
@@ -190,6 +190,27 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         final ConstraintLayout buttonsView = (ConstraintLayout) findViewById(R.id.buttonsview);
         final ConstraintLayout settingsView = (ConstraintLayout) findViewById(R.id.settingsLayout);
+        final ConstraintLayout infoView = (ConstraintLayout) findViewById(R.id.infoLayout);
+
+        // Set listener on info button to show/hide info view when clicked
+
+        View.OnClickListener infoListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (infoView.getVisibility() == ConstraintLayout.VISIBLE) {
+                    infoView.setVisibility(ConstraintLayout.GONE);
+                    buttonsView.setVisibility(ConstraintLayout.VISIBLE);
+                }
+                else {
+                    infoView.setVisibility(ConstraintLayout.VISIBLE);
+                    buttonsView.setVisibility(ConstraintLayout.GONE);
+                }
+            }
+        };
+        ImageButton info = (ImageButton) findViewById(R.id.info);
+        info.setOnClickListener(infoListener);
+        ImageButton infoBack = (ImageButton) findViewById(R.id.infoBack);
+        infoBack.setOnClickListener(infoListener);
 
         // Set listener on settings button to show/hide settings view when clicked
 
@@ -199,19 +220,17 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                 if (settingsView.getVisibility() == ConstraintLayout.VISIBLE) {
                     settingsView.setVisibility(ConstraintLayout.GONE);
                     buttonsView.setVisibility(ConstraintLayout.VISIBLE);
-                    mSettingsOpen = false;
                 }
                 else {
                     settingsView.setVisibility(ConstraintLayout.VISIBLE);
                     buttonsView.setVisibility(ConstraintLayout.GONE);
-                    mSettingsOpen = true;
                 }
             }
         };
         ImageButton settings = (ImageButton) findViewById(R.id.settings);
         settings.setOnClickListener(settingsListener);
-        ImageButton settingsCancel = (ImageButton) findViewById(R.id.settingsBack);
-        settingsCancel.setOnClickListener(settingsListener);
+        ImageButton settingsBack = (ImageButton) findViewById(R.id.settingsBack);
+        settingsBack.setOnClickListener(settingsListener);
 
         final EditText input = (EditText) findViewById(R.id.input);
 
@@ -323,9 +342,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         mButton.setImageResource(R.drawable.main_square);
         mStartTime = System.currentTimeMillis();
-        mDeltaTime = System.currentTimeMillis() - mLastTime;
         mElapsedTime = System.currentTimeMillis() - mStartTime;
-        mLastTime = System.currentTimeMillis();
 
         mCurrentState = 1;
     }
@@ -385,15 +402,13 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         setColorSpaceMats(inputFrame.rgba());
 
         if (mCurrentState == 1) {
-            mDeltaTime = System.currentTimeMillis() - mLastTime;
             mElapsedTime = System.currentTimeMillis() - mStartTime;
-            mLastTime = System.currentTimeMillis();
         }
 
         Mat reMat = pipeline();
 
         if (mCurrentState == 0) {
-            if (mHsvMat != null) { // use && !mSettingsOpen to prevent changing target while in settings
+            if (mHsvMat != null) {
                 int coorX = -999;
                 int coorY = -999;
 
@@ -463,9 +478,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         // Find max contour area
         double maxArea = 0;
         MatOfPoint maxContour = null;
-        Iterator<MatOfPoint> each = mPreContours.iterator();
-        while (each.hasNext()) {
-            MatOfPoint wrapper = each.next();
+        for (MatOfPoint wrapper : mPreContours) {
             double area = Imgproc.contourArea(wrapper);
             if (area > maxArea) {
                 maxArea = area;

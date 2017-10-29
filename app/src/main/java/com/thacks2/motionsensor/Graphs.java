@@ -379,7 +379,7 @@ public class Graphs extends AppCompatActivity implements Serializable {
         String equation = "";
         double[] coefficients = function.getCoefficients();
         for (int j = coefficients.length - 1; j >= 0; j--) {
-            String coefficient = String.format("%.2f", coefficients[j]);
+            String coefficient = String.format("%.4f", coefficients[j]);
 
             if (j == 1)
                 equation += coefficient + "x + ";
@@ -466,7 +466,7 @@ public class Graphs extends AppCompatActivity implements Serializable {
         String equation = "";
         double[] coefficients = function.getCoefficients();
         for (int j = coefficients.length - 1; j >= 0; j--) {
-            String coefficient = String.format("%.2f", coefficients[j]);
+            String coefficient = String.format("%.4f", coefficients[j]);
 
             if (j == 1)
                 equation += coefficient + "x + ";
@@ -556,9 +556,9 @@ public class Graphs extends AppCompatActivity implements Serializable {
     private void drawHorizontalGraph() {
 
         // Draw horizontal motion graph
-        LineDataSet dataSetDx = new LineDataSet(mPositionX, "Position"); // add entries to dataset
-        LineDataSet dataSetVx = new LineDataSet(mVelocityX, "Velocity"); // add entries to dataset
-        LineDataSet dataSetAx = new LineDataSet(mAccelerationX, "Acceleration"); // add entries to dataset
+        LineDataSet dataSetDx = new LineDataSet(mPositionX, "Pos"); // add entries to dataset
+        LineDataSet dataSetVx = new LineDataSet(mVelocityX, "Vel"); // add entries to dataset
+        LineDataSet dataSetAx = new LineDataSet(mAccelerationX, "Accel"); // add entries to dataset
 
         dataSetDx.setColor(Color.RED);
         dataSetDx.setCircleColor(Color.RED);
@@ -604,9 +604,9 @@ public class Graphs extends AppCompatActivity implements Serializable {
     private void drawVerticalGraph() {
 
         // Draw vertical motion graph
-        LineDataSet dataSetDy = new LineDataSet(mPositionY, "Position"); // add entries to dataset
-        LineDataSet dataSetVy = new LineDataSet(mVelocityY, "Velocity"); // add entries to dataset
-        LineDataSet dataSetAy = new LineDataSet(mAccelerationY, "Acceleration"); // add entries to dataset
+        LineDataSet dataSetDy = new LineDataSet(mPositionY, "Pos"); // add entries to dataset
+        LineDataSet dataSetVy = new LineDataSet(mVelocityY, "Vel"); // add entries to dataset
+        LineDataSet dataSetAy = new LineDataSet(mAccelerationY, "Accel"); // add entries to dataset
 
         dataSetDy.setColor(Color.RED);
         dataSetDy.setCircleColor(Color.RED);
@@ -684,8 +684,8 @@ public class Graphs extends AppCompatActivity implements Serializable {
         }
 
         // Find first and second derivative for velocity and acceleration respectively
-        mVelocityX = findDerivative(mPositionX, 2);
-        mAccelerationX = findDerivative(mVelocityX, 3);
+        mVelocityX = findDerivative(mPositionX, 3);
+        mAccelerationX = findDerivative(mVelocityX, 5);
 
 
     // Vertical Motion Graph
@@ -722,8 +722,8 @@ public class Graphs extends AppCompatActivity implements Serializable {
         }
 
         // Find first and second derivative for velocity and acceleration respectively
-        mVelocityY = findDerivative(mPositionY, 2);
-        mAccelerationY = findDerivative(mVelocityY, 3);
+        mVelocityY = findDerivative(mPositionY, 3);
+        mAccelerationY = findDerivative(mVelocityY, 5);
 
 
     }
