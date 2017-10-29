@@ -38,14 +38,14 @@
         android:layout_width="match_parent"
         android:layout_height="110dp">
 
-        <ImageButton
-            android:id="@+id/retry"
-            android:layout_width="65dp"
-            android:layout_height="55dp"
-            android:padding="5dp"
-            android:background="@color/colorNull"
-            android:scaleType="fitCenter"
-            android:src="@drawable/graph_new"/>
+        <!--<ImageButton-->
+            <!--android:id="@+id/retry"-->
+            <!--android:layout_width="65dp"-->
+            <!--android:layout_height="55dp"-->
+            <!--android:padding="5dp"-->
+            <!--android:background="@color/colorNull"-->
+            <!--android:scaleType="fitCenter"-->
+            <!--android:src="@drawable/graph_new"/>-->
 
         <ImageButton
             android:id="@+id/home"
@@ -90,7 +90,6 @@
             android:scaleType="fitCenter"
             android:src="@drawable/graph_acceleration_disabled"/>
 
-
         <ImageButton
             android:id="@+id/showHorizontal"
             android:layout_width="65dp"
@@ -109,6 +108,23 @@
             android:scaleType="fitCenter"
             android:src="@drawable/graph_vertical"
             android:rotation="0"/>
+
+        <ImageButton
+            android:id="@+id/regression"
+            android:layout_width="65dp"
+            android:layout_height="55dp"
+            android:padding="5dp"
+            android:background="@color/colorNull"
+            android:scaleType="fitCenter"
+            android:src="@drawable/graph_regression_disabled"
+            android:rotation="0"/>
+
+        <Spinner
+            android:id="@+id/regressionDegree"
+            android:layout_width="65dp"
+            android:layout_height="55dp"
+            android:padding="5dp"
+            android:spinnerMode="dropdown"/>
 
     </LinearLayout>
 

@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">VisionMotion</string>
+
+    <string-array name="degree_array">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
 </resources>

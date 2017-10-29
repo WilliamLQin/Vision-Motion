@@ -3,10 +3,6 @@ package com.thacks2.motionsensor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by nekhilnagia16 on 10/21/17.
- */
-
 public class DataEntry implements Parcelable
 {
     private double time;
@@ -14,14 +10,18 @@ public class DataEntry implements Parcelable
     private double y;
     private float diameter;
     private double realToPixelsRatio;
+    private double resolutionWidth;
+    private double resolutionHeight;
 
-    public DataEntry(long time, double x, double y, float diameter, double realToPixelsRatio)
+    public DataEntry(long time, double x, double y, float diameter, double realToPixelsRatio, double resolutionWidth, double resolutionHeight)
     {
         this.time = (double)time;
         this.x = x;
         this.y = y;
         this.diameter = diameter;
         this.realToPixelsRatio = realToPixelsRatio;
+        this.resolutionWidth = resolutionWidth;
+        this.resolutionHeight = resolutionHeight;
     }
 
 
@@ -31,6 +31,8 @@ public class DataEntry implements Parcelable
         y = in.readDouble();
         diameter = in.readFloat();
         realToPixelsRatio = in.readDouble();
+        resolutionWidth = in.readDouble();
+        resolutionHeight = in.readDouble();
     }
 
     public static final Creator<DataEntry> CREATOR = new Creator<DataEntry>() {
@@ -57,17 +59,29 @@ public class DataEntry implements Parcelable
     {
         return x;
     }
+    public double getReverseRawX() {
+        return resolutionWidth - x;
+    }
     public double getX()
     {
         return getDistanceInUnits(x);
+    }
+    public double getReverseX() {
+        return getDistanceInUnits(resolutionWidth - x);
     }
     public double getRawY()
     {
         return y;
     }
+    public double getReverseRawY() {
+        return resolutionHeight - y;
+    }
     public double getY()
     {
         return getDistanceInUnits(y);
+    }
+    public double getReverseY() {
+        return getDistanceInUnits(resolutionHeight - y);
     }
     public float getDiameter()
     {
@@ -80,7 +94,7 @@ public class DataEntry implements Parcelable
 
     @Override
     public String toString() {
-        return "DataEntry: T=" + getSecondTime() + " X=" + getX() + " Y=" + getY() + " Diameter=" + getDiameter();
+        return "DataEntry: T=" + getSecondTime() + " X=" + getRawX() + "/" + resolutionWidth + " Y=" + getRawY() + "/" + resolutionHeight + " Diameter=" + getDiameter();
     }
 
     @Override
@@ -95,5 +109,7 @@ public class DataEntry implements Parcelable
         dest.writeDouble(y);
         dest.writeFloat(diameter);
         dest.writeDouble(realToPixelsRatio);
+        dest.writeDouble(resolutionWidth);
+        dest.writeDouble(resolutionHeight);
     }
 }

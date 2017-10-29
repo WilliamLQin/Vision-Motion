@@ -37,22 +37,22 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp" />
 
-        <ImageButton
-            android:id="@+id/back"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:rotation="-90"
-            android:src="@drawable/main_backarrow"
-            android:scaleType="fitCenter"
-            android:backgroundTint="@color/colorNull"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
-            app:layout_constraintVertical_bias="1.0"
-            android:layout_marginLeft="6dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginStart="6dp" />
+        <!--<ImageButton-->
+            <!--android:id="@+id/back"-->
+            <!--android:layout_width="60dp"-->
+            <!--android:layout_height="60dp"-->
+            <!--android:rotation="-90"-->
+            <!--android:src="@drawable/main_backarrow"-->
+            <!--android:scaleType="fitCenter"-->
+            <!--android:backgroundTint="@color/colorNull"-->
+            <!--app:layout_constraintTop_toTopOf="parent"-->
+            <!--app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--android:layout_marginTop="6dp"-->
+            <!--android:layout_marginBottom="6dp"-->
+            <!--app:layout_constraintVertical_bias="1.0"-->
+            <!--android:layout_marginLeft="6dp"-->
+            <!--app:layout_constraintLeft_toLeftOf="parent"-->
+            <!--android:layout_marginStart="6dp" />-->
 
         <ImageButton
             android:id="@+id/info"
