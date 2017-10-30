@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">VisionMotion</string>
+    <string name="app_name">Vision Motion</string>
 
     <string-array name="degree_array">
         <item>0</item>
