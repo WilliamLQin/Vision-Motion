@@ -6,4 +6,21 @@
         <item>1</item>
         <item>2</item>
     </string-array>
+
+
+    <string name="info_header">
+        Welcome to Vision Motion!
+    </string>
+    <string name="info_body">
+        1) Prepare the object to track and another circular coloured object.
+        \n2) Place both objects an equal distance away from the camera.
+        \n &#032;&#032;&#032;&#032;&#032;&#032; Note that movement towards or away from the camera is not tracked.
+        \n3) Position the camera so that it can see the entire motion.
+        \n &#032;&#032;&#032;&#032;&#032;&#032; Do not move the camera for any of the remaining steps.
+        \n4) Tap on the circular coloured object to select its colour, and \n &#032;&#032;&#032;&#032;&#032;&#032; calibrate the camera in settings (gear icon).
+        \n5) Tap on the object to track to select its colour.
+        \n6) Press the record button (red circle) and begin the motion of the \n &#032;&#032;&#032;&#032;&#032;&#032; tracked object.
+        \n7) Press the stop button (red square) once the motion is done.
+        \n8) View your results on the graph page!
+    </string>
 </resources>
