@@ -1,6 +1,6 @@
 [![release](https://img.shields.io/badge/release-v1.0-blue.svg)](https://raw.githubusercontent.com/WilliamLQin/MotionSensor/master/VisionMotion.apk)
 [![OpenCV](https://img.shields.io/badge/OpenCV-3.0.0-red.svg)](https://opencv.org/releases.html)
-[![API](https://img.shields.io/badge/API-21-green.svg)](https://developer.android.com/about/versions/android-5.0.html)
+[![API](https://img.shields.io/badge/API-21+-green.svg)](https://developer.android.com/about/versions/android-5.0.html)
 
 # Vision Motion
 
