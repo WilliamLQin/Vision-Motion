@@ -28,5 +28,5 @@ Download the project and open it in Android Studio, and it should work! <br>
 ## OpenCV Library
 
 If you are having any issues with the OpenCV library, try reinstalling the android pack at the [OpenCV website](https://opencv.org/releases.html). <br>
-You can follow this [tutorial] (https://www.learn2crack.com/2016/03/setup-opencv-sdk-android-studio.html) to setup the OpenCV library again. <br>
+You can follow this [tutorial](https://www.learn2crack.com/2016/03/setup-opencv-sdk-android-studio.html) to setup the OpenCV library again. <br>
 
