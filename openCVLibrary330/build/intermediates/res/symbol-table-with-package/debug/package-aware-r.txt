@@ -1,3 +1,4 @@
+org.opencv
 int attr camera_id 0x7f040001
 int attr show_fps 0x7f040002
 int id any 0x7f0c0001

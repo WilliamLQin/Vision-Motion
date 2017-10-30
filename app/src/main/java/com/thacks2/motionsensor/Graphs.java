@@ -685,7 +685,7 @@ public class Graphs extends AppCompatActivity implements Serializable {
 
         // Find first and second derivative for velocity and acceleration respectively
         mVelocityX = findDerivative(mPositionX, 3);
-        mAccelerationX = findDerivative(mVelocityX, 5);
+        mAccelerationX = findDerivative(mVelocityX, 4);
 
 
     // Vertical Motion Graph
@@ -723,7 +723,7 @@ public class Graphs extends AppCompatActivity implements Serializable {
 
         // Find first and second derivative for velocity and acceleration respectively
         mVelocityY = findDerivative(mPositionY, 3);
-        mAccelerationY = findDerivative(mVelocityY, 5);
+        mAccelerationY = findDerivative(mVelocityY, 4);
 
 
     }
