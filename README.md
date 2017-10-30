@@ -2,7 +2,7 @@
 [![OpenCV](https://img.shields.io/badge/OpenCV-3.0.0-red.svg)](https://opencv.org/releases.html)
 [![API](https://img.shields.io/badge/API-21-green.svg)](https://developer.android.com/about/versions/android-5.0.html)
 
-# Motion Sensor
+# Vision Motion
 
 ![alt icon](https://raw.githubusercontent.com/WilliamLQin/MotionSensor/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)
 
