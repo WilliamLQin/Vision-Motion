@@ -17,7 +17,7 @@ Running on OpenCV 3.3.0 Android pack release. <br>
 ## Getting Started
 
 Vision Motion is a project that has been directly built in Android Studio. <br>
-Download the project and open it in Android Studio, and it should work! <br>
+Download the project and open it in Android Studio! <br>
 
 ## Built With
 
