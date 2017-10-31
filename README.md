@@ -6,7 +6,7 @@
 
 ![alt icon](https://raw.githubusercontent.com/WilliamLQin/MotionSensor/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)
 
-Motion Sensor, also known as Vision Motion, is a mobile app that uses the camera to track an object and graph position, velocity, and acceleration. <br>
+Vision Motion is a mobile app that uses the camera to track an object and graph position, velocity, and acceleration. <br>
 
 <br>
 
