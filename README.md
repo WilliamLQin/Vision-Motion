@@ -1,4 +1,4 @@
-[![release](https://img.shields.io/badge/release-v1.0-blue.svg)](https://raw.githubusercontent.com/WilliamLQin/MotionSensor/master/VisionMotion.apk)
+[![release](https://img.shields.io/badge/release-v1.0-blue.svg)](https://raw.githubusercontent.com/WilliamLQin/Vision-Motion/master/VisionMotion.apk)
 [![OpenCV](https://img.shields.io/badge/OpenCV-3.0.0-red.svg)](https://opencv.org/releases.html)
 [![Android-Studio](https://img.shields.io/badge/Android%20Studio-3.0.0-brightgreen.svg)](https://developer.android.com/studio/index.html)
 [![API](https://img.shields.io/badge/API-21+-green.svg)](https://developer.android.com/about/versions/android-5.0.html)
