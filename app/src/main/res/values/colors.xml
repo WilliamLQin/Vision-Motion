@@ -14,4 +14,8 @@
     <color name="colorPosition">#ffff0000</color>
     <color name="colorVelocity">#ff0000ff</color>
     <color name="colorAcceleration">#ff00ff00</color>
+    <color name="colorRoundButton1">#02bdce</color>
+    <color name="colorRoundButton1Pressed">#03eaff</color>
+    <color name="colorRoundButton2">#00b743</color>
+    <color name="colorRoundButton2Pressed">#00dc51</color>
 </resources>

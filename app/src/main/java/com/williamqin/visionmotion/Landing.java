@@ -83,8 +83,17 @@ public class Landing extends AppCompatActivity {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
-                launchActivity();
+        Button load = (Button) findViewById(R.id.load);
+        load.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), LoadData.class);
+                startActivity(intent);
             }
         });
 
@@ -263,12 +272,6 @@ public class Landing extends AppCompatActivity {
         }
     }
 
-
-    private void launchActivity() {
-        System.out.println("switch");
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
 
 }
 
