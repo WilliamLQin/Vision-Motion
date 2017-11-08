@@ -11,7 +11,6 @@ Vision Motion is a mobile app that uses the camera to track an object and graph 
 
 <br>
 
-Last updated October 29, 2017. <br>
 Working in Android Studio 3.0. <br>
 Running on OpenCV 3.3.0 Android pack release. <br>
 
