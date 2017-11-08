@@ -13,6 +13,11 @@ public class DataEntry implements Parcelable
     private double resolutionWidth;
     private double resolutionHeight;
 
+    public DataEntry()
+    {
+        // Default constructor required for calls to DataSnapshot.getValue(DataEntry.class)
+    }
+
     public DataEntry(long time, double x, double y, float diameter, double realToPixelsRatio, double resolutionWidth, double resolutionHeight)
     {
         this.time = (double)time;

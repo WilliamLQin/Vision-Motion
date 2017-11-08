@@ -19,8 +19,18 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -122,6 +132,16 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             }
         }
     };
+
+    // Firebase
+    private DatabaseReference mDataDatabase;
+    private DatabaseReference mUserDatabase;
+    private DatabaseReference mMetaDataDatabase;
+
+    private FirebaseUser mFirebaseUser;
+
+    private final String ACTIVE_DATA_KEY = "ActiveDataStream";
+
 
     private void initializeOpenCVDependencies() throws IOException {
         mOpenCvCameraView.enableView();
@@ -325,10 +345,23 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
     }
 
-//    private void backToEnterData() {
-//        Intent intent = new Intent(this, EnterData.class);
-//        startActivity(intent);
-//    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Setup Firebase
+        mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (mFirebaseUser != null) {
+            String id = mFirebaseUser.getUid();
+
+            mDataDatabase = FirebaseDatabase.getInstance().getReference().child("Data").child(id);
+            mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(id);
+            mMetaDataDatabase = FirebaseDatabase.getInstance().getReference().child("MetaData").child(id);
+
+
+        }
+    }
 
     private void startRecording() {
         if (mRealToPixelsRatio == -1) {
@@ -339,6 +372,9 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         if (mRecordedData.size() != 0) {
             mRecordedData.clear();
         }
+
+        if (mFirebaseUser != null)
+            mDataDatabase.child(ACTIVE_DATA_KEY).removeValue();
 
         mButton.setImageResource(R.drawable.main_square);
         mStartTime = System.currentTimeMillis();
@@ -353,11 +389,55 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         for (DataEntry data : mRecordedData) {
             System.out.println(data);
         }
+
+        if (mFirebaseUser != null)
+            uploadDataToFirebaseDatabase();
+
         Intent intent = new Intent(this, Graphs.class);
         Bundle b = new Bundle();
         b.putParcelableArrayList("data", (mRecordedData));
         intent.putExtras(b);
         startActivity(intent);
+    }
+
+    private void uploadDataToFirebaseDatabase() {
+
+        mUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                gotDataCount(user.getDataCount(), user);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void gotDataCount(int dataCount, User user) {
+
+        String motionName = "Motion" + dataCount;
+
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String date = df.format(c.getTime());
+
+        mMetaDataDatabase.child(date).setValue(new MetaData(motionName, mRecordedData.size(), System.currentTimeMillis()));
+
+        for (int i = 0; i < mRecordedData.size(); i++) {
+
+            String key = mDataDatabase.child(date).push().getKey();
+            mDataDatabase.child(date).child(key).setValue(mRecordedData.get(i));
+
+        }
+
+        user.incrementDataCount();
+
+        mUserDatabase.setValue(user);
+
     }
 
     @Override
@@ -529,8 +609,16 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             mCenterY = center.y;
             mDiameter = 2 * radius[0];
 
-            if (mCurrentState == 1 && mElapsedTime < System.currentTimeMillis() - 1000 && mRealToPixelsRatio != -1)
-                mRecordedData.add(new DataEntry(mElapsedTime, mCenterX, mCenterY, mDiameter, mRealToPixelsRatio, mCameraWidth, mCameraHeight));
+            if (mCurrentState == 1 && mElapsedTime < System.currentTimeMillis() - 1000 && mRealToPixelsRatio != -1) {
+                DataEntry stepData = new DataEntry(mElapsedTime, mCenterX, mCenterY, mDiameter, mRealToPixelsRatio, mCameraWidth, mCameraHeight);
+
+                mRecordedData.add(stepData);
+                // Stream to Firebase
+                if (mFirebaseUser != null) {
+                    String key = mDataDatabase.child(ACTIVE_DATA_KEY).push().getKey();
+                    mDataDatabase.child(ACTIVE_DATA_KEY).child(key).setValue(stepData);
+                }
+            }
 
             // Draw Minimum Enclosing Circle
             Imgproc.circle(mRgbaMat, center, (int) radius[0], new Scalar(100, 100, 255), 7);

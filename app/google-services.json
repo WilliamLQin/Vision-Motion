@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "125464596821",
+    "firebase_url": "https://vision-motion.firebaseio.com",
+    "project_id": "vision-motion",
+    "storage_bucket": "vision-motion.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:125464596821:android:3fcba06a8418ed95",
+        "android_client_info": {
+          "package_name": "com.thacks2.motionsensor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "125464596821-spnm9enoutas1789glsp34mqiv550umg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.thacks2.motionsensor",
+            "certificate_hash": "716026a09ecc3450c2d07f106e37077b51451a94"
+          }
+        },
+        {
+          "client_id": "125464596821-mb5j2o57gbc2ig3803coi8srijc5mtnu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4lR8D_sp72_RqxAGeQjxDcWb-2BzxeDk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "125464596821-mb5j2o57gbc2ig3803coi8srijc5mtnu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
