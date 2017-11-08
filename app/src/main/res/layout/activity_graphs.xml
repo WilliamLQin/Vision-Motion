@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:weightSum="2"
     android:orientation="vertical"
-    tools:context="com.thacks2.motionsensor.Graphs">
+    tools:context="com.williamqin.visionmotion.Graphs">
 
     <LinearLayout
         android:layout_height="match_parent"

@@ -1,8 +1,7 @@
-package com.thacks2.motionsensor;
+package com.williamqin.visionmotion;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -31,7 +30,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
 
 import org.opencv.android.BaseLoaderCallback;
@@ -45,7 +43,6 @@ import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Scalar;
 import org.opencv.core.Point;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.imgproc.Moments;
 
 public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
 

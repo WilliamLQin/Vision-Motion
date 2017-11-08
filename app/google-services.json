@@ -8,18 +8,18 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:125464596821:android:3fcba06a8418ed95",
+        "mobilesdk_app_id": "1:125464596821:android:05fa71caed471dcb",
         "android_client_info": {
-          "package_name": "com.thacks2.motionsensor"
+          "package_name": "com.williamqin.visionmotion"
         }
       },
       "oauth_client": [
         {
-          "client_id": "125464596821-spnm9enoutas1789glsp34mqiv550umg.apps.googleusercontent.com",
+          "client_id": "125464596821-oa9h6agg8hdvun0t5sdq5v28jrh7p4rh.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.thacks2.motionsensor",
-            "certificate_hash": "716026a09ecc3450c2d07f106e37077b51451a94"
+            "package_name": "com.williamqin.visionmotion",
+            "certificate_hash": "d9bed973abf763a86b2c4e95c2b8059f58135fac"
           }
         },
         {

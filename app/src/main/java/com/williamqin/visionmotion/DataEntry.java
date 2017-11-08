@@ -1,4 +1,4 @@
-package com.thacks2.motionsensor;
+package com.williamqin.visionmotion;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -1,4 +1,4 @@
-package com.thacks2.motionsensor;
+package com.williamqin.visionmotion;
 
 /**
  * Created by William on 11/7/2017.

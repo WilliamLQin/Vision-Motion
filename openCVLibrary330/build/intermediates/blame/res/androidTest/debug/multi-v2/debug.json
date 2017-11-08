@@ -1,7 +1,11 @@
 {
     "logs": [
         {
-            "outputFile": "M:\\CreativePortfolio\\AndroidStudio\\Projects\\MotionSensor\\openCVLibrary330\\build\\intermediates\\res\\merged\\androidTest\\debug\\values_values.arsc.flat",
+            "outputFile": "/Users/williamqin/CreativePortfolio/AndroidStudio/MotionSensor/M:\\CreativePortfolio\\AndroidStudio\\Projects\\MotionSensor\\openCVLibrary330\\build\\intermediates\\res\\merged\\androidTest\\debug\\values_values.arsc.flat",
+            "map": []
+        },
+        {
+            "outputFile": "/Users/williamqin/CreativePortfolio/AndroidStudio/MotionSensor/openCVLibrary330/build/intermediates/res/merged/androidTest/debug/values_values.arsc.flat",
             "map": []
         }
     ]
