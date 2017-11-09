@@ -25,7 +25,8 @@
             </intent-filter>
         </activity>
         <activity android:name="com.williamqin.visionmotion.MainActivity" />
-        <activity android:name="com.williamqin.visionmotion.Graphs"></activity>
+        <activity android:name="com.williamqin.visionmotion.Graphs" />
+        <activity android:name="com.williamqin.visionmotion.LoadData" />
     </application>
 
 </manifest>

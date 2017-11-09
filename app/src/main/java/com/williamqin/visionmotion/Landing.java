@@ -92,8 +92,16 @@ public class Landing extends AppCompatActivity {
         load.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), LoadData.class);
-                startActivity(intent);
+                FirebaseUser user = mAuth.getCurrentUser();
+
+                if (user != null) {
+                    Intent intent = new Intent(getApplicationContext(), LoadData.class);
+                    startActivity(intent);
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Log in to access previously recorded data!", Toast.LENGTH_SHORT).show();
+
+                }
             }
         });
 

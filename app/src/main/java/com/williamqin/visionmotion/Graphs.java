@@ -72,6 +72,10 @@ public class Graphs extends AppCompatActivity implements Serializable {
         Bundle bundle = getIntent().getExtras();
         mEntries = bundle.getParcelableArrayList("data");
 
+        for (DataEntry data : mEntries) {
+            System.out.println(data);
+        }
+
         plotGraphs();
         drawHorizontalGraph();
         drawVerticalGraph();

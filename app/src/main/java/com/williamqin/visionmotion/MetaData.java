@@ -6,6 +6,7 @@ package com.williamqin.visionmotion;
 
 public class MetaData {
 
+    private String date;
     private String name;
     private int size;
     private long timestamp;
@@ -15,11 +16,19 @@ public class MetaData {
 
     }
 
-    public MetaData(String name, int size, long timestamp)
+    public MetaData(String date, String name, int size, long timestamp)
     {
+        this.date = date;
         this.name = name;
         this.size = size;
         this.timestamp = timestamp;
+    }
+
+    public String getDate() {
+        return date;
+    }
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getName()

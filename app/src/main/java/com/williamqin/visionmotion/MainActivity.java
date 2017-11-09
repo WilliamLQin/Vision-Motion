@@ -403,7 +403,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                gotDataCount(user.getDataCount(), user);
+                gotDataCount(user);
             }
 
             @Override
@@ -414,15 +414,17 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
     }
 
-    private void gotDataCount(int dataCount, User user) {
+    private void gotDataCount(User user) {
 
-        String motionName = "Motion" + dataCount;
+        user.incrementDataCount();
+
+        String motionName = "Motion " + user.getDataCount();
 
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
         String date = df.format(c.getTime());
 
-        mMetaDataDatabase.child(date).setValue(new MetaData(motionName, mRecordedData.size(), System.currentTimeMillis()));
+        mMetaDataDatabase.child(date).setValue(new MetaData(date, motionName, mRecordedData.size(), System.currentTimeMillis()));
 
         for (int i = 0; i < mRecordedData.size(); i++) {
 
@@ -430,8 +432,6 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             mDataDatabase.child(date).child(key).setValue(mRecordedData.get(i));
 
         }
-
-        user.incrementDataCount();
 
         mUserDatabase.setValue(user);
 
@@ -607,7 +607,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             mDiameter = 2 * radius[0];
 
             if (mCurrentState == 1 && mElapsedTime < System.currentTimeMillis() - 1000 && mRealToPixelsRatio != -1) {
-                DataEntry stepData = new DataEntry(mElapsedTime, mCenterX, mCenterY, mDiameter, mRealToPixelsRatio, mCameraWidth, mCameraHeight);
+                DataEntry stepData = new DataEntry(mElapsedTime, mCenterX, mCenterY, (double)mDiameter, mRealToPixelsRatio, mCameraWidth, mCameraHeight);
 
                 mRecordedData.add(stepData);
                 // Stream to Firebase

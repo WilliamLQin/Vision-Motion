@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "125464596821-2cpp8bt98vl4gvgdjnb34l5569e3abh9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.williamqin.visionmotion",
+            "certificate_hash": "716026a09ecc3450c2d07f106e37077b51451a94"
+          }
+        },
+        {
           "client_id": "125464596821-oa9h6agg8hdvun0t5sdq5v28jrh7p4rh.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
