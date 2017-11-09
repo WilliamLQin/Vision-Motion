@@ -1,10 +1,13 @@
 package com.williamqin.visionmotion;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -132,7 +135,6 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
     // Firebase
     private DatabaseReference mDataDatabase;
-    private DatabaseReference mUserDatabase;
     private DatabaseReference mMetaDataDatabase;
 
     private FirebaseUser mFirebaseUser;
@@ -353,9 +355,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             String id = mFirebaseUser.getUid();
 
             mDataDatabase = FirebaseDatabase.getInstance().getReference().child("Data").child(id);
-            mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(id);
             mMetaDataDatabase = FirebaseDatabase.getInstance().getReference().child("MetaData").child(id);
-
 
         }
     }
@@ -387,9 +387,19 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             System.out.println(data);
         }
 
-        if (mFirebaseUser != null)
-            uploadDataToFirebaseDatabase();
+        if (mFirebaseUser != null) {
+            uploadData();
+            // First, prompt the user for the name of their motion
+            // Once done,
+            //  - Upload data to Firebase database
+            //  - Open graph
+        }
+        else {
+            openGraph();
+        }
+    }
 
+    private void openGraph() {
         Intent intent = new Intent(this, Graphs.class);
         Bundle b = new Bundle();
         b.putParcelableArrayList("data", (mRecordedData));
@@ -397,28 +407,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         startActivity(intent);
     }
 
-    private void uploadDataToFirebaseDatabase() {
-
-        mUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                gotDataCount(user);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-
-    private void gotDataCount(User user) {
-
-        user.incrementDataCount();
-
-        String motionName = "Motion " + user.getDataCount();
+    private void uploadDataToFirebaseDatabase(String motionName) {
 
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
@@ -433,8 +422,43 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         }
 
-        mUserDatabase.setValue(user);
+        openGraph();
 
+    }
+
+    public void uploadData() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter name for motion:");
+
+// Set up the input
+        final EditText input = new EditText(this);
+
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+// Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String name = input.getText().toString();
+
+                if (name.equals("")) {
+                    name = "Untitled Motion";
+                }
+
+                // Once input received, use it
+                uploadDataToFirebaseDatabase(name);
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     @Override

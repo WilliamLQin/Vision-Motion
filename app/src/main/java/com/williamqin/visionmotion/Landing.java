@@ -243,30 +243,30 @@ public class Landing extends AppCompatActivity {
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(mProfilePicture);
 
-            final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid());
-            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (!dataSnapshot.exists())
-                    {
-                        userRef.setValue(new User(user.getDisplayName(), user.getEmail()));
-                    }
-                    else
-                    {
-                        User oldUser = dataSnapshot.getValue(User.class);
-                        if (oldUser.getName() != user.getDisplayName() || oldUser.getEmail() != user.getEmail()) {
-                            oldUser.setName(user.getDisplayName());
-                            oldUser.setEmail(user.getEmail());
-                            userRef.setValue(oldUser);
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
+//            final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid());
+//            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    if (!dataSnapshot.exists())
+//                    {
+//                        userRef.setValue(new User(user.getDisplayName(), user.getEmail()));
+//                    }
+//                    else
+//                    {
+//                        User oldUser = dataSnapshot.getValue(User.class);
+//                        if (oldUser.getName() != user.getDisplayName() || oldUser.getEmail() != user.getEmail()) {
+//                            oldUser.setName(user.getDisplayName());
+//                            oldUser.setEmail(user.getEmail());
+//                            userRef.setValue(oldUser);
+//                        }
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//
+//                }
+//            });
 
 
         } else {

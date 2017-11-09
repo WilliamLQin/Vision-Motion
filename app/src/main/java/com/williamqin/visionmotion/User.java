@@ -6,7 +6,7 @@ package com.williamqin.visionmotion;
 
 public class User {
 
-    private int dataCount;
+//    private int dataCount;
     private String name;
     private String email;
 
@@ -17,20 +17,20 @@ public class User {
 
     public User(String name, String email)
     {
-        this.dataCount = 0;
+//        this.dataCount = 0;
         this.name = name;
         this.email = email;
     }
 
-    public int getDataCount()
-    {
-        return dataCount;
-    }
-
-    public void incrementDataCount()
-    {
-        dataCount ++;
-    }
+//    public int getDataCount()
+//    {
+//        return dataCount;
+//    }
+//
+//    public void incrementDataCount()
+//    {
+//        dataCount ++;
+//    }
 
     public String getName()
     {
