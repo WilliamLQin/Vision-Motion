@@ -570,8 +570,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         Imgproc.cvtColor(inMat, mBgrMat, Imgproc.COLOR_RGBA2BGR);
 
         // Get RGBA
-        mRgbaMat = mBgrMat; // For some reason on a Huawei P10 the output needs to be in BGR
-        //mRgbaMat = inMat;
+        //mRgbaMat = mBgrMat; // For some reason on some devices the output needs to be in BGR
+        mRgbaMat = inMat;
 
         // Convert to HSV
         Imgproc.cvtColor(mBgrMat, mHsvMat, Imgproc.COLOR_BGR2HSV);
