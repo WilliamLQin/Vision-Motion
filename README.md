@@ -27,6 +27,14 @@ Download the project and open it in Android Studio! <br>
 
 ## Troubleshooting
 
+Some devices may display the camera feed in BGR instead of RGB.
+Please modify the code in MainActivity.java lines 573-574 to change the output:
+```
+//mRgbaMat = mBgrMat; // For some reason on some devices the output needs to be in BGR
+mRgbaMat = inMat;
+```
+Try commenting either one of them and see which one works.
+
 If you are having any issues with the OpenCV library, try reinstalling the android pack at the [OpenCV website](https://opencv.org/releases.html). <br>
 You can follow this [tutorial](https://www.learn2crack.com/2016/03/setup-opencv-sdk-android-studio.html) to setup the OpenCV library again. <br>
 <br>
