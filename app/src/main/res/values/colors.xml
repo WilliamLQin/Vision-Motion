@@ -8,6 +8,7 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
     <color name="colorInfoTint">#a3000000</color>
+    <color name="colorInfoTint2">#c8000000</color>
     <color name="colorSeekProgress">#c7c7c7</color>
     <color name="colorSeekButton">#ffffff</color>
     <color name="colorNull">#00ffffff</color>

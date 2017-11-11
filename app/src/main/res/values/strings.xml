@@ -2,9 +2,9 @@
     <string name="app_name">Vision Motion</string>
 
     <string-array name="degree_array">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
+        <item>x^0</item>
+        <item>x^1</item>
+        <item>x^2</item>
     </string-array>
 
 

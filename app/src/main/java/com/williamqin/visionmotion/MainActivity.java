@@ -77,8 +77,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
     // Color settings
     private double mTargetH = 0, mTargetS = 0, mTargetV = 0;
-    private double mRangeH = 7, mRangeS = 100, mRangeV = 90;
-    private double mDefaultRangeH = 7, mDefaultRangeS = 100, mDefaultRangeV = 90;
+    private double mRangeH = 12, mRangeS = 100, mRangeV = 90;
+    private double mDefaultRangeH = 12, mDefaultRangeS = 100, mDefaultRangeV = 90;
 
     // Time recording
     private long mStartTime, mElapsedTime;
@@ -430,6 +430,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Enter name for motion:");
 
+
 // Set up the input
         final EditText input = new EditText(this);
 
@@ -457,6 +458,19 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                 dialog.cancel();
             }
         });
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                System.out.println("Don't cancel!!!");
+            }
+        });
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                System.out.println("Don't dismiss!!");
+            }
+        });
+        builder.setCancelable(false);
 
         builder.show();
     }

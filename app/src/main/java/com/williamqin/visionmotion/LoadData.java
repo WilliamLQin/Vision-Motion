@@ -1,15 +1,24 @@
 package com.williamqin.visionmotion;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.google.android.gms.auth.api.Auth;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -46,6 +55,8 @@ public class LoadData extends AppCompatActivity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                System.out.println("Clicked!");
 
                 if (mUser == null)
                     return;
@@ -158,18 +169,90 @@ public class LoadData extends AppCompatActivity {
 
     }
 
+    public class DataAdapter extends ArrayAdapter<String> {
+        public DataAdapter(Context context, ArrayList<String> strings) {
+            super(context, 0, strings);
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+
+            String string = getItem(position);
+
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
+            }
+
+            TextView textView = (TextView) convertView.findViewById(R.id.textDataEntry);
+            textView.setText(string);
+
+            ImageButton delete = (ImageButton) convertView.findViewById(R.id.deleteButton);
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    verifyRemoval(getItem(position));
+
+                }
+            });
+
+            return convertView;
+
+        }
+    }
+
     private void updateList() {
 
-        String[] displayNames = new String[mMetaDataList.size()];
+        ArrayList<String> displayNames = new ArrayList<>();
 
         for (int i = 0; i < mMetaDataList.size(); i++) {
             MetaData metaData = mMetaDataList.get(i);
             String displayName = metaData.getName();
             displayName += " " + metaData.getDate();
-            displayNames[i] = displayName;
+            displayNames.add(displayName);
         }
 
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, displayNames);
+        DataAdapter adapter = new DataAdapter(this, displayNames);
         mListView.setAdapter(adapter);
+
+    }
+
+    private void verifyRemoval(final String title) {
+        DialogInterface.OnClickListener dialogueClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch(which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        removeFromFirebase(title);
+                        break;
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Delete '" + title.substring(0, title.length()-20) + "'?").setPositiveButton("Yes", dialogueClickListener).setNegativeButton("No", dialogueClickListener).show();
+    }
+
+    private void removeFromFirebase(String title) {
+        String date = title.substring(title.length() - 19);
+        System.out.println(date);
+
+        if (mUser == null)
+            mUser = mAuth.getCurrentUser();
+
+        if (mUser != null) {
+
+            DatabaseReference removedDataRef = FirebaseDatabase.getInstance().getReference().child("Data").child(mUser.getUid()).child(date);
+            removedDataRef.removeValue();
+
+            DatabaseReference removedMetaDataRef = FirebaseDatabase.getInstance().getReference().child("MetaData").child(mUser.getUid()).child(date);
+            removedMetaDataRef.removeValue();
+
+            updateUI(mUser);
+
+        }
+
     }
 }

@@ -121,7 +121,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="110dp"
         android:gravity="center"
-        android:text="Sign in to be able to save your data \n in the cloud and access it anywhere!"
+        android:text="Sign in to automatically save your data \n in the cloud and access it anywhere!"
         android:textColor="@color/colorBlack"
         android:textSize="16sp"
         app:layout_constraintLeft_toLeftOf="@+id/textView3"

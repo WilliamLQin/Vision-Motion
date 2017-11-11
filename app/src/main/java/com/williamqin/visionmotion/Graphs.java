@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -14,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -29,6 +31,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoint;
+import org.apache.commons.math3.geometry.euclidean.twod.Line;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -53,11 +56,13 @@ public class Graphs extends AppCompatActivity implements Serializable {
 
     private boolean mShowPos = true, mShowVel = true, mShowAcc = false;
 
-    private ImageButton mHome, mDownload, mPos, mVel, mAcc, mHor, mVer, mRegression;
+    private ImageButton mHome, mDownload, mPos, mVel, mAcc, mHor, mVer, mRegression, mInfo, mHideInfo;
     private boolean mChangingRegression = false;
     private int mHorDisplayState, mVerDisplayState; // 0 for display, 1 for backwards, 2 for hidden
     private Entry mInitialHor, mFinalHor, mInitialVer, mFinalVer;
     private int mRegressionDegree;
+    private ConstraintLayout mInfoLayout;
+    private LinearLayout mChartLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +84,38 @@ public class Graphs extends AppCompatActivity implements Serializable {
         plotGraphs();
         drawHorizontalGraph();
         drawVerticalGraph();
+
+        mInfo = (ImageButton) findViewById(R.id.graph_info);
+        mHideInfo = (ImageButton) findViewById(R.id.graph_info_back);
+        mInfoLayout = (ConstraintLayout) findViewById(R.id.graph_info_layout);
+        mChartLayout = (LinearLayout) findViewById(R.id.chart_layout);
+
+        // Default visibility settings
+        mInfoLayout.setVisibility(ConstraintLayout.GONE);
+        mHideInfo.setVisibility(ConstraintLayout.GONE);
+        mChartLayout.setVisibility(LinearLayout.VISIBLE);
+        mInfo.setVisibility(ConstraintLayout.VISIBLE);
+
+        View.OnClickListener infoListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mInfoLayout.getVisibility() == ConstraintLayout.VISIBLE) {
+                    mInfoLayout.setVisibility(ConstraintLayout.GONE);
+                    mHideInfo.setVisibility(ConstraintLayout.GONE);
+                    mChartLayout.setVisibility(LinearLayout.VISIBLE);
+                    mInfo.setVisibility(ConstraintLayout.VISIBLE);
+                }
+                else {
+                    mInfoLayout.setVisibility(ConstraintLayout.VISIBLE);
+                    mHideInfo.setVisibility(ConstraintLayout.VISIBLE);
+                    mChartLayout.setVisibility(LinearLayout.INVISIBLE);
+                    mInfo.setVisibility(ConstraintLayout.GONE);
+                }
+            }
+        };
+
+        mInfo.setOnClickListener(infoListener);
+        mHideInfo.setOnClickListener(infoListener);
 
         mHome = (ImageButton) findViewById(R.id.home);
         mHome.setOnClickListener(new View.OnClickListener() {
@@ -165,19 +202,19 @@ public class Graphs extends AppCompatActivity implements Serializable {
                 else {
                     mRegression.setImageResource(R.drawable.graph_regression_disabled);
 
-                    if (mInitialHor != null || mFinalHor != null || mRegressionX != null) {
-                        mInitialHor = null;
-                        mFinalHor = null;
-                        mRegressionX = null;
-                        drawHorizontalGraph();
-                    }
-
-                    if (mInitialVer != null || mFinalVer != null || mRegressionY != null) {
-                        mInitialVer = null;
-                        mFinalVer = null;
-                        mRegressionY = null;
-                        drawVerticalGraph();
-                    }
+//                    if (mInitialHor != null || mFinalHor != null || mRegressionX != null) {
+//                        mInitialHor = null;
+//                        mFinalHor = null;
+//                        mRegressionX = null;
+//                        drawHorizontalGraph();
+//                    }
+//
+//                    if (mInitialVer != null || mFinalVer != null || mRegressionY != null) {
+//                        mInitialVer = null;
+//                        mFinalVer = null;
+//                        mRegressionY = null;
+//                        drawVerticalGraph();
+//                    }
                 }
             }
         });
