@@ -39,7 +39,8 @@ or
 mRgbaMat = mBgrMat;
 //mRgbaMat = inMat;
 ```
-
+<br>
+<br>
 If you are having any issues with the OpenCV library, try reinstalling the android pack at the [OpenCV website](https://opencv.org/releases.html). <br>
 You can follow this [tutorial](https://www.learn2crack.com/2016/03/setup-opencv-sdk-android-studio.html) to setup the OpenCV library again. <br>
 <br>
