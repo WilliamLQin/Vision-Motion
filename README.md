@@ -41,8 +41,8 @@ mRgbaMat = mBgrMat;
 ```
 <br>
 <br>
-If you are having any issues with the OpenCV library, try reinstalling the android pack at the [OpenCV website](https://opencv.org/releases.html). <br>
-You can follow this [tutorial](https://www.learn2crack.com/2016/03/setup-opencv-sdk-android-studio.html) to setup the OpenCV library again. <br>
+If you are having any issues with the OpenCV library, try reinstalling the android pack at the <a href="https://opencv.org/releases.html">OpenCV website</a>. <br>
+You can follow this <a href="https://www.learn2crack.com/2016/03/setup-opencv-sdk-android-studio.html">tutorial</a> to setup the OpenCV library again. <br>
 <br>
 If you are still running on Android Studio 2.3.3 you will have to modify the gradle files to back to your version of certain libraries.
 
