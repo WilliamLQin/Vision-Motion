@@ -570,7 +570,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         Imgproc.cvtColor(inMat, mBgrMat, Imgproc.COLOR_RGBA2BGR);
 
         // Get RGBA
-        //mRgbaMat = mBgrMat; // For some reason on some devices the output needs to be in BGR
+//        mRgbaMat = mBgrMat; // For some reason on some devices the output needs to be in BGR
         mRgbaMat = inMat;
 
         // Convert to HSV
