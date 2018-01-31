@@ -949,8 +949,10 @@ public class Graphs extends AppCompatActivity implements Serializable {
             e.printStackTrace();
         }finally{
             try {
-                br.close();
-                fr.close();
+                if (br != null)
+                    br.close();
+                if (fr != null)
+                    fr.close();
 
                 Toast.makeText(getApplicationContext(), "Successfully saved " + name + " to " + path.toString(), Toast.LENGTH_LONG).show();
 
