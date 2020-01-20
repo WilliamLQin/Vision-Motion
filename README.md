@@ -8,6 +8,7 @@
 ![alt icon](https://raw.githubusercontent.com/WilliamLQin/MotionSensor/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)
 
 Vision Motion is a mobile app that uses the camera to track an object and graph position, velocity, and acceleration. <br>
+For pictures and a demo video, head [here](https://visionmotion.williamqin.com)! <br>
 
 <br>
 
