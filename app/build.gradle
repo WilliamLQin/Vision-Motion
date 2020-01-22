@@ -6,15 +6,9 @@ android {
     defaultConfig {
         applicationId 'com.williamqin.visionmotion'
         minSdkVersion 21
-<<<<<<< HEAD
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-=======
-        targetSdkVersion 26
-        versionCode 5
-        versionName "1.0.4"
->>>>>>> eebb82765669eb2938f9229554092757c25281a2
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
