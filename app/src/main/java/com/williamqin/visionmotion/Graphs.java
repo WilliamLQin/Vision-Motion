@@ -6,9 +6,6 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
@@ -40,6 +37,10 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class Graphs extends AppCompatActivity implements Serializable {
 
@@ -585,15 +586,15 @@ public class Graphs extends AppCompatActivity implements Serializable {
 
         dataSetDx.setColor(Color.RED);
         dataSetDx.setCircleColor(Color.RED);
-        dataSetDx.setCircleColorHole(Color.RED);
+        dataSetDx.setCircleHoleColor(Color.RED);
         dataSetDx.setHighlightLineWidth(2.0f);
         dataSetVx.setColor(Color.BLUE);
         dataSetVx.setCircleColor(Color.BLUE);
-        dataSetVx.setCircleColorHole(Color.BLUE);
+        dataSetVx.setCircleHoleColor(Color.BLUE);
         dataSetVx.setHighlightLineWidth(2.0f);
         dataSetAx.setColor(Color.GREEN);
         dataSetAx.setCircleColor(Color.GREEN);
-        dataSetAx.setCircleColorHole(Color.GREEN);
+        dataSetAx.setCircleHoleColor(Color.GREEN);
         dataSetAx.setHighlightLineWidth(2.0f);
 
         List<ILineDataSet> dataSetsX = new ArrayList<>();
@@ -633,15 +634,15 @@ public class Graphs extends AppCompatActivity implements Serializable {
 
         dataSetDy.setColor(Color.RED);
         dataSetDy.setCircleColor(Color.RED);
-        dataSetDy.setCircleColorHole(Color.RED);
+        dataSetDy.setCircleHoleColor(Color.RED);
         dataSetDy.setHighlightLineWidth(2.0f);
         dataSetVy.setColor(Color.BLUE);
         dataSetVy.setCircleColor(Color.BLUE);
-        dataSetVy.setCircleColorHole(Color.BLUE);
+        dataSetVy.setCircleHoleColor(Color.BLUE);
         dataSetVy.setHighlightLineWidth(2.0f);
         dataSetAy.setColor(Color.GREEN);
         dataSetAy.setCircleColor(Color.GREEN);
-        dataSetAy.setCircleColorHole(Color.GREEN);
+        dataSetAy.setCircleHoleColor(Color.GREEN);
         dataSetAy.setHighlightLineWidth(2.0f);
 
         List<ILineDataSet> dataSetsY = new ArrayList<>();
