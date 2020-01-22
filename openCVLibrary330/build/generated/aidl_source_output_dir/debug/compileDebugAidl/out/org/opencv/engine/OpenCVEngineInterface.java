@@ -1,5 +1,9 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
+<<<<<<< HEAD:openCVLibrary330/build/generated/aidl_source_output_dir/debug/compileDebugAidl/out/org/opencv/engine/OpenCVEngineInterface.java
+=======
+ * Original file: M:\\CreativePortfolio\\AndroidStudio\\Projects\\MotionSensor\\openCVLibrary330\\src\\main\\aidl\\org\\opencv\\engine\\OpenCVEngineInterface.aidl
+>>>>>>> eebb82765669eb2938f9229554092757c25281a2:openCVLibrary330/build/generated/source/aidl/debug/org/opencv/engine/OpenCVEngineInterface.java
  */
 package org.opencv.engine;
 /**
